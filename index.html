@@ -1028,10 +1028,11 @@ CHANGE ONLY: the Vocabulary list in the sidebar will be hidden (blocked) during 
   }
 
   // NEW: hide vocab list during Sentence Tasks (unscramble/mistake)
-  function updateSidebarVisibility(item){
-    const isSentenceTask = (item.section === "Sentence Tasks") || (item.type === "tile") || (item.type === "mistake");
-    vocabBox.classList.toggle("hidden", isSentenceTask);
-  }
+function updateSidebarVisibility(item){
+  // Hide ONLY during spelling (click letters)
+  const hideDuringSpelling = (item.type === "spell");
+  vocabBox.classList.toggle("hidden", hideDuringSpelling);
+}
 
   function render(){
     doneBox.style.display = "none";
