@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lesson 1–2 • 5-Min Online Practice (Click Only)</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111c33;
+      --card:#0b1226;
+      --ink:#e5e7eb;
+      --muted:#9ca3af;
+      --line:#24324f;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+      --accent:#60a5fa;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Century Gothic", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 700px at 20% 10%, #1a2a55 0%, var(--bg) 60%);
+      color:var(--ink);
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 40px}
+
+    header{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(96,165,250,.15), rgba(96,165,250,.04));
+      padding:14px;
+      border-radius:14px;
+    }
+
+    /* LOGO AREA */
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-width: 0;
+    }
+    .logo{
+      width:56px;height:56px;
+      object-fit:contain;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(11,18,38,.55);
+      padding:6px;
+      flex: 0 0 auto;
+    }
+
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35}
+
+    .meta{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:flex-end;
+      min-width: 240px;
+    }
+    .pillrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
+      font-size:12px;
+      border:1px solid var(--line);
+      background: rgba(17,28,51,.7);
+      padding:6px 10px;
+      border-radius:999px;
+      user-select:none;
+    }
+    .pill b{color:#fff}
+    .bar{
+      width:240px;height:10px;
+      background: rgba(255,255,255,.07);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .bar>div{
+      height:100%;width:0%;
+      background: linear-gradient(90deg, #60a5fa, #34d399);
+      transition: width .25s ease;
+    }
+
+    main{margin-top:14px;display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+    @media (max-width: 860px){
+      main{grid-template-columns:1fr}
+      .meta{align-items:flex-start;min-width:0}
+      .pillrow{justify-content:flex-start}
+      .bar{width:100%}
+    }
+    @media (max-width: 520px){
+      .logo{width:44px;height:44px}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(17,28,51,.55);
+      border-radius:14px;
+      padding:12px;
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:14px;color:#fff;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .tag{
+      font-size:12px;color:var(--muted);
+      border:1px solid var(--line);
+      background: rgba(11,18,38,.7);
+      padding:4px 8px;border-radius:999px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: rgba(11,18,38,.7);
+      border-radius:14px;
+      padding:14px;
+    }
+    .qtype{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .prompt{font-size:16px;line-height:1.35;margin:0 0 12px}
+    .sentence{
+      font-size:13px;color:var(--muted);
+      border-left:3px solid rgba(96,165,250,.5);
+      padding-left:10px;margin:8px 0 10px;line-height:1.4;
+    }
+
+    .choices{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:8px;
+    }
+    @media (max-width: 520px){ .choices{grid-template-columns:1fr} }
+
+    button.choice, button.smallbtn{
+      width:100%;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(31,42,68,.95), rgba(31,42,68,.65));
+      color:var(--ink);
+      border-radius:12px;
+      padding:10px;
+      font-size:14px;
+      text-align:left;
+      cursor:pointer;
+      transition: transform .05s ease, border-color .2s ease;
+      user-select:none;
+    }
+    button.choice:hover{border-color: rgba(96,165,250,.55)}
+    button.choice:active{transform: translateY(1px)}
+    button.choice[disabled]{opacity:.6;cursor:not-allowed}
+    button.choice.correct{
+      border-color: rgba(34,197,94,.7);
+      background: linear-gradient(180deg, rgba(34,197,94,.25), rgba(31,42,68,.65));
+    }
+    button.choice.wrong{
+      border-color: rgba(239,68,68,.7);
+      background: linear-gradient(180deg, rgba(239,68,68,.22), rgba(31,42,68,.65));
+    }
+
+    .feedback{
+      margin-top:10px;
+      font-size:13px;color:var(--muted);
+      line-height:1.35;min-height:18px;
+    }
+    .feedback b{color:#fff}
+    .feedback .good{color: var(--good)}
+    .feedback .bad{color: var(--bad)}
+
+    .controls{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .smallbtn{
+      text-align:center;
+      font-size:13px;
+      padding:10px;
+      background: linear-gradient(180deg, rgba(34,211,238,.20), rgba(31,42,68,.65));
+      border-color: rgba(34,211,238,.25);
+    }
+    .smallbtn.secondary{
+      background: linear-gradient(180deg, rgba(96,165,250,.12), rgba(31,42,68,.65));
+      border-color: rgba(96,165,250,.25);
+    }
+
+    .tileRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .tile{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(31,42,68,.7);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      user-select:none;
+      font-size:14px;
+      transition: transform .05s ease, border-color .2s ease;
+    }
+    .tile:hover{border-color: rgba(96,165,250,.55)}
+    .tile:active{transform: translateY(1px)}
+    .tile.selected{
+      border-color: rgba(34,197,94,.7);
+      background: rgba(34,197,94,.18);
+    }
+
+    .answerBox{
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:12px;
+      padding:10px;
+      min-height:46px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      background: rgba(11,18,38,.45);
+    }
+    .ghost{color: rgba(156,163,175,.85);font-size:13px}
+
+    .sideBox{display:flex;flex-direction:column;gap:10px}
+    .stat{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 12px;border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(11,18,38,.65);
+      font-size:13px;
+    }
+    .stat b{color:#fff}
+    .list{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-height:1.4}
+    .note{
+      font-size:12.5px;color:var(--muted);line-height:1.4;
+      border-left:3px solid rgba(245,158,11,.55);
+      padding-left:10px;
+    }
+
+    .done{
+      display:none;
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(34,197,94,.35);
+      background: rgba(34,197,94,.10);
+    }
+    .done h3{margin:0 0 6px;font-size:15px}
+    .done p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <!-- LEFT: LOGO + TITLE -->
+      <div class="brand">
+        <!-- Put your logo file in the same folder as this HTML and name it: logo.png -->
+        <img src="logo.png" alt="Logo" class="logo" />
+        <div>
+          <h1>Lesson 1–2 • 5-Minute Online Practice (Click Only)</h1>
+          <div class="sub">
+            Part 1: Vocabulary in context (click meaning) + spelling (click letters).<br/>
+            Part 2: Grammar quick check + 2 sentence tasks (click words / click mistake).
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: PROGRESS -->
+      <div class="meta">
+        <div class="pillrow">
+          <div class="pill"><b>Progress</b> <span id="progTxt">0/0</span></div>
+          <div class="pill"><b>Score</b> <span id="scoreTxt">0</span></div>
+          <div class="pill"><b>Time</b> <span id="timeTxt">05:00</span></div>
+        </div>
+        <div class="bar"><div id="progBar"></div></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>
+          <span id="sectionTitle">Loading…</span>
+          <span class="tag" id="sectionTag">Click only</span>
+        </h2>
+
+        <div class="card" id="cardArea"></div>
+
+        <div class="done" id="doneBox">
+          <h3>Done!</h3>
+          <p>
+            Great. Now do your written homework.<br/>
+            Tip: Review any words you missed in Part 1 before writing.
+          </p>
+          <div class="controls">
+            <button class="smallbtn secondary" id="reviewWrongBtn">Review Wrong Only</button>
+            <button class="smallbtn" id="restartBtn">Restart</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel sideBox">
+        <h2>Quick Info <span class="tag">Teacher / Student</span></h2>
+
+        <div class="stat"><span>Current task</span> <b id="taskTxt">—</b></div>
+        <div class="stat"><span>Correct / Total</span> <b><span id="correctTxt">0</span>/<span id="totalTxt">0</span></b></div>
+
+        <div class="note">
+          <b>How to play:</b><br/>
+          • Click an answer (no typing).<br/>
+          • Spelling: click letters to build the word.<br/>
+          • Sentence tasks: click word tiles (or click the mistake).
+        </div>
+
+        <div>
+          <div class="tag" style="display:inline-block;margin-bottom:6px;">Vocabulary list</div>
+          <ul class="list">
+            <li>magazine, reporter, twin</li>
+            <li>awful, tidy, ginger, cheap</li>
+            <li>rucksack, trainers, postcards</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="tag" style="display:inline-block;margin-bottom:6px;">Grammar focus</div>
+          <ul class="list">
+            <li>BE: am / is / are</li>
+            <li>Questions: helping verb first</li>
+            <li>Negatives: add <b>not</b></li>
+            <li>Articles: a / an / the / Ø</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+<script>
+(() => {
+  const TOTAL_TIME_SEC = 5 * 60;
+
+  // ---------- PART 1: VOCAB MCQ ----------
+  const vocabMCQ = [
+    {
+      id:"v_magazine",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"What does <b>magazine</b> mean here?",
+      sentence:"“I bought a magazine to read on the bus.”",
+      choices:[
+        {t:"a book with many short articles and pictures", ok:true},
+        {t:"a large bag you carry on your back", ok:false},
+        {t:"a small card you send in the mail", ok:false},
+        {t:"a person who reports news", ok:false}
+      ],
+      explain:"A <b>magazine</b> is a publication with articles and pictures."
+    },
+    {
+      id:"v_reporter",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"What does <b>reporter</b> mean here?",
+      sentence:"“The reporter asked questions and wrote a story for the newspaper.”",
+      choices:[
+        {t:"a person who writes news stories", ok:true},
+        {t:"one of two children born at the same time", ok:false},
+        {t:"neat and clean", ok:false},
+        {t:"not expensive", ok:false}
+      ],
+      explain:"A <b>reporter</b> collects information and writes news."
+    },
+    {
+      id:"v_twin",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"What does <b>twin</b> mean here?",
+      sentence:"“Lily and Lucy are twins. They have the same birthday.”",
+      choices:[
+        {t:"one of two children born at the same time", ok:true},
+        {t:"a person who reports news", ok:false},
+        {t:"a sports shoe", ok:false},
+        {t:"a card you send in the mail", ok:false}
+      ],
+      explain:"A <b>twin</b> is one of two babies born at the same time."
+    },
+    {
+      id:"v_awful",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"Choose the best meaning of <b>awful</b>.",
+      sentence:"“The food tasted awful, so I stopped eating.”",
+      choices:[
+        {t:"very bad", ok:true},
+        {t:"not expensive", ok:false},
+        {t:"very neat and clean", ok:false},
+        {t:"orange-red (hair color)", ok:false}
+      ],
+      explain:"<b>Awful</b> means very bad."
+    },
+    {
+      id:"v_tidy",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"Choose the best meaning of <b>tidy</b>.",
+      sentence:"“Her room is tidy. Everything is in the right place.”",
+      choices:[
+        {t:"neat and clean", ok:true},
+        {t:"very bad", ok:false},
+        {t:"a backpack", ok:false},
+        {t:"a sports shoe", ok:false}
+      ],
+      explain:"<b>Tidy</b> means neat and organized."
+    },
+    {
+      id:"v_ginger",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"What does <b>ginger</b> mean here?",
+      sentence:"“She has ginger hair — it’s orange-red.”",
+      choices:[
+        {t:"orange-red (hair color)", ok:true},
+        {t:"not expensive", ok:false},
+        {t:"a person who writes news", ok:false},
+        {t:"a backpack", ok:false}
+      ],
+      explain:"<b>Ginger</b> can describe orange-red hair."
+    },
+    {
+      id:"v_cheap",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"Choose the best replacement for <b>cheap</b>.",
+      sentence:"“These trainers are cheap. They don’t cost much money.”",
+      choices:[
+        {t:"not expensive", ok:true},
+        {t:"very bad", ok:false},
+        {t:"very tidy", ok:false},
+        {t:"very old", ok:false}
+      ],
+      explain:"<b>Cheap</b> means not expensive."
+    },
+    {
+      id:"v_rucksack",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"What does <b>rucksack</b> mean here?",
+      sentence:"“Put your books in your rucksack.”",
+      choices:[
+        {t:"a backpack", ok:true},
+        {t:"a magazine", ok:false},
+        {t:"a postcard", ok:false},
+        {t:"a reporter", ok:false}
+      ],
+      explain:"A <b>rucksack</b> is a backpack."
+    },
+    {
+      id:"v_trainers",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"What are <b>trainers</b>?",
+      sentence:"“He wears trainers for running and PE.”",
+      choices:[
+        {t:"sports shoes", ok:true},
+        {t:"cards you send in the mail", ok:false},
+        {t:"a publication with articles", ok:false},
+        {t:"two children born at the same time", ok:false}
+      ],
+      explain:"<b>Trainers</b> are sports shoes."
+    },
+    {
+      id:"v_postcards",
+      section:"Part 1 • Vocabulary",
+      qtype:"Meaning in context",
+      prompt:"What are <b>postcards</b>?",
+      sentence:"“We sent postcards from the beach to our friends.”",
+      choices:[
+        {t:"cards you send in the mail with a picture", ok:true},
+        {t:"bags you carry on your back", ok:false},
+        {t:"sports shoes", ok:false},
+        {t:"people who write news", ok:false}
+      ],
+      explain:"<b>Postcards</b> are picture cards you send to someone."
+    },
+  ].map(x => ({...x, type:"mcq"}));
+
+  // ---------- PART 1: SPELLING (CLICK LETTERS) ----------
+  const spelling = [
+    { id:"s_magazine",  word:"MAGAZINE",  hint:"(noun) You read it. It has pictures and articles."},
+    { id:"s_reporter",  word:"REPORTER",  hint:"(noun) This person writes news."},
+    { id:"s_rucksack",  word:"RUCKSACK",  hint:"(noun) A backpack."},
+    { id:"s_ginger",    word:"GINGER",    hint:"(adj) Orange-red hair color."},
+    { id:"s_postcards", word:"POSTCARDS", hint:"(noun) Cards you send in the mail."},
+  ].map(s => ({...s, type:"spell_click", section:"Part 1 • Vocabulary", qtype:"Spelling (click letters)"}));
+
+  // ---------- PART 2: GRAMMAR QUICK CHECK ----------
+  const grammar = [
+    {
+      id:"g_be1",
+      type:"mcq",
+      section:"Part 2 • Grammar",
+      qtype:"Choose the correct BE verb",
+      prompt:"Choose the best sentence.",
+      sentence:"(Talking about one girl)",
+      choices:[
+        {t:"She are tidy.", ok:false},
+        {t:"She is tidy.", ok:true},
+        {t:"She am tidy.", ok:false},
+        {t:"She be tidy.", ok:false}
+      ],
+      explain:"With <b>she</b> we use <b>is</b>."
+    },
+    {
+      id:"g_be_q",
+      type:"mcq",
+      section:"Part 2 • Grammar",
+      qtype:"Question word order",
+      prompt:"Choose the correct question.",
+      sentence:"(You want to ask about a boy)",
+      choices:[
+        {t:"Is he a reporter?", ok:true},
+        {t:"He is a reporter?", ok:false},
+        {t:"Is a reporter he?", ok:false},
+        {t:"Are he a reporter?", ok:false}
+      ],
+      explain:"BE goes first: <b>Is</b> + subject + information."
+    },
+    {
+      id:"g_not",
+      type:"mcq",
+      section:"Part 2 • Grammar",
+      qtype:"Negative with BE",
+      prompt:"Choose the correct negative sentence.",
+      sentence:"(Meaning: He is not cheap.)",
+      choices:[
+        {t:"He not is cheap.", ok:false},
+        {t:"He isn’t cheap.", ok:true},
+        {t:"He don’t cheap.", ok:false},
+        {t:"He doesn’t cheap.", ok:false}
+      ],
+      explain:"Negative with BE: <b>is not / isn’t</b>."
+    },
+    {
+      id:"g_articles1",
+      type:"mcq",
+      section:"Part 2 • Grammar",
+      qtype:"Articles",
+      prompt:"Choose the best option.",
+      sentence:"“I bought ___ magazine.”",
+      choices:[
+        {t:"a", ok:true},
+        {t:"an", ok:false},
+        {t:"the (first time)", ok:false},
+        {t:"Ø (nothing)", ok:false}
+      ],
+      explain:"First time / one thing: <b>a magazine</b>."
+    },
+    {
+      id:"g_articles_plural",
+      type:"mcq",
+      section:"Part 2 • Grammar",
+      qtype:"Plurals (no article)",
+      prompt:"Choose the best option.",
+      sentence:"“I like ___ trainers.” (in general)",
+      choices:[
+        {t:"Ø (nothing)", ok:true},
+        {t:"a", ok:false},
+        {t:"an", ok:false},
+        {t:"the", ok:false}
+      ],
+      explain:"Plural in general: <b>Ø trainers</b> (no article)."
+    }
+  ];
+
+  // ---------- PART 2: 2 SENTENCE TASKS (CLICK ONLY) ----------
+  const sentenceTasks = [
+    {
+      id:"t_unscramble",
+      type:"tile_unscramble",
+      section:"Part 2 • Sentence Tasks",
+      qtype:"Unscramble the sentence (click words)",
+      prompt:"Click the words in the correct order.",
+      target:["The","twins","are","tidy","."],
+      tiles:["tidy",".","The","are","twins"]
+    },
+    {
+      id:"t_find_mistake",
+      type:"find_mistake",
+      section:"Part 2 • Sentence Tasks",
+      qtype:"Find the mistake (click the wrong word)",
+      prompt:"Click the one word that is wrong.",
+      sentenceWords:["Where","are","you","live","?"],
+      wrongIndex:3,
+      correctSentence:"Where do you live?",
+      explain:"For this question, we need a helping verb: <b>do</b>."
+    }
+  ];
+
+  // ---------- SEQUENCE ----------
+  const ALL = [...vocabMCQ, ...spelling, ...grammar, ...sentenceTasks];
+
+  // ---------- STATE ----------
+  let idx = 0;
+  let score = 0;
+  let correct = 0;
+  let answered = new Map();   // id -> {ok:boolean}
+  let wrongIds = new Set();
+  let timer = TOTAL_TIME_SEC;
+  let timerHandle = null;
+
+  // For review mode
+  let sequence = ALL.slice();
+
+  // ---------- DOM ----------
+  const sectionTitle = document.getElementById("sectionTitle");
+  const sectionTag = document.getElementById("sectionTag");
+  const cardArea = document.getElementById("cardArea");
+  const doneBox = document.getElementById("doneBox");
+
+  const progTxt = document.getElementById("progTxt");
+  const scoreTxt = document.getElementById("scoreTxt");
+  const timeTxt = document.getElementById("timeTxt");
+  const progBar = document.getElementById("progBar");
+
+  const taskTxt = document.getElementById("taskTxt");
+  const correctTxt = document.getElementById("correctTxt");
+  const totalTxt = document.getElementById("totalTxt");
+
+  const reviewWrongBtn = document.getElementById("reviewWrongBtn");
+  const restartBtn = document.getElementById("restartBtn");
+
+  // ---------- HELPERS ----------
+  function shuffle(arr){
+    const a = arr.slice();
+    for (let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function formatTime(sec){
+    const m = String(Math.floor(sec/60)).padStart(2,"0");
+    const s = String(sec%60).padStart(2,"0");
+    return `${m}:${s}`;
+  }
+  function setAnswered(id, ok){
+    answered.set(id, {ok});
+    if (!ok) wrongIds.add(id);
+  }
+  function setProgress(){
+    progTxt.textContent = `${Math.min(idx, sequence.length)}/${sequence.length}`;
+    scoreTxt.textContent = String(score);
+    correctTxt.textContent = String(correct);
+    totalTxt.textContent = String(sequence.length);
+    const pct = sequence.length ? (Math.min(idx, sequence.length)/sequence.length)*100 : 0;
+    progBar.style.width = `${pct}%`;
+  }
+
+  function stopTimer(){
+    if (timerHandle){ clearInterval(timerHandle); timerHandle = null; }
+  }
+  function startTimer(){
+    stopTimer();
+    timeTxt.textContent = formatTime(timer);
+    timerHandle = setInterval(() => {
+      timer--;
+      if (timer < 0) timer = 0;
+      timeTxt.textContent = formatTime(timer);
+      if (timer === 0){
+        stopTimer();
+        showDone(true);
+      }
+    }, 1000);
+  }
+
+  function showDone(timeUp=false){
+    cardArea.style.display = "none";
+    doneBox.style.display = "block";
+    sectionTitle.textContent = timeUp ? "Time’s up!" : "Finished!";
+    sectionTag.textContent = timeUp ? "Stop here" : "Nice work";
+    taskTxt.textContent = timeUp ? "Time limit reached" : "Completed";
+    setProgress();
+  }
+
+  function next(){
+    idx++;
+    if (idx >= sequence.length){
+      stopTimer();
+      showDone(false);
+      return;
+    }
+    render();
+  }
+
+  function resetAll(){
+    idx = 0;
+    score = 0;
+    correct = 0;
+    answered = new Map();
+    wrongIds = new Set();
+    timer = TOTAL_TIME_SEC;
+    sequence = ALL.slice();
+    doneBox.style.display = "none";
+    cardArea.style.display = "block";
+    render();
+    startTimer();
+  }
+
+  // ---------- RENDER: MCQ ----------
+  function renderMCQ(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">${item.prompt}</div>
+      <div class="sentence">${item.sentence || ""}</div>
+      <div class="choices" id="choices"></div>
+      <div class="feedback" id="fb"></div>
+      <div class="controls">
+        <button class="smallbtn secondary" id="skipBtn">Skip</button>
+      </div>
+    `;
+
+    const choicesDiv = document.getElementById("choices");
+    const fb = document.getElementById("fb");
+    const skipBtn = document.getElementById("skipBtn");
+
+    const shuffled = shuffle(item.choices);
+    shuffled.forEach(ch => {
+      const btn = document.createElement("button");
+      btn.className = "choice";
+      btn.innerHTML = ch.t;
+      btn.addEventListener("click", () => {
+        [...choicesDiv.querySelectorAll("button")].forEach(b => b.disabled = true);
+
+        if (ch.ok){
+          btn.classList.add("correct");
+          fb.innerHTML = `<span class="good"><b>Correct.</b></span> ${item.explain || ""}`;
+          score += 1; correct += 1; setAnswered(item.id, true);
+        } else {
+          btn.classList.add("wrong");
+          const correctTexts = item.choices.filter(c=>c.ok).map(c=>c.t);
+          [...choicesDiv.querySelectorAll("button")].forEach(b => {
+            if (correctTexts.includes(b.innerHTML)) b.classList.add("correct");
+          });
+          fb.innerHTML = `<span class="bad"><b>Not quite.</b></span> ${item.explain || ""}`;
+          setAnswered(item.id, false);
+        }
+        setProgress();
+        setTimeout(next, 850);
+      });
+      choicesDiv.appendChild(btn);
+    });
+
+    skipBtn.addEventListener("click", () => {
+      fb.innerHTML = `<b>Skipped.</b>`;
+      setAnswered(item.id, false);
+      setProgress();
+      setTimeout(next, 250);
+    });
+
+    taskTxt.textContent =
+      item.section.includes("Vocabulary") ? "Vocab check" :
+      item.section.includes("Grammar") ? "Grammar check" :
+      "Practice";
+  }
+
+  // ---------- RENDER: SPELL (CLICK LETTERS) ----------
+  function renderSpell(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    const word = item.word.toUpperCase();
+    const letters = shuffle(word.split(""));
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">Build the word: <b>${"•".repeat(word.length)}</b></div>
+      <div class="sentence">${item.hint || ""}</div>
+
+      <div class="answerBox" id="answerBox"><span class="ghost">Click letters to build the word…</span></div>
+      <div class="tileRow" id="letters"></div>
+
+      <div class="feedback" id="fb"></div>
+      <div class="controls">
+        <button class="smallbtn secondary" id="resetBuildBtn">Reset</button>
+        <button class="smallbtn secondary" id="skipBtn">Skip</button>
+      </div>
+    `;
+
+    const lettersDiv = document.getElementById("letters");
+    const answerBox = document.getElementById("answerBox");
+    const fb = document.getElementById("fb");
+    const resetBuildBtn = document.getElementById("resetBuildBtn");
+    const skipBtn = document.getElementById("skipBtn");
+
+    let built = [];
+    let used = new Array(letters.length).fill(false);
+
+    function refreshAnswer(){
+      answerBox.innerHTML = "";
+      if (built.length === 0){
+        const sp = document.createElement("span");
+        sp.className = "ghost";
+        sp.textContent = "Click letters to build the word…";
+        answerBox.appendChild(sp);
+      } else {
+        built.forEach(ch => {
+          const t = document.createElement("span");
+          t.className = "tile selected";
+          t.textContent = ch;
+          answerBox.appendChild(t);
+        });
+      }
+    }
+
+    letters.forEach((ch, i) => {
+      const t = document.createElement("div");
+      t.className = "tile";
+      t.textContent = ch;
+      t.addEventListener("click", () => {
+        if (used[i]) return;
+        used[i] = true;
+        built.push(ch);
+        t.classList.add("selected");
+        refreshAnswer();
+
+        if (built.length === word.length){
+          [...lettersDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
+          const attempt = built.join("");
+          if (attempt === word){
+            fb.innerHTML = `<span class="good"><b>Correct!</b></span> Spelling: <b>${word}</b>`;
+            score += 1; correct += 1; setAnswered(item.id, true);
+          } else {
+            fb.innerHTML = `<span class="bad"><b>Almost.</b></span> Correct spelling: <b>${word}</b>`;
+            setAnswered(item.id, false);
+          }
+          setProgress();
+          setTimeout(next, 900);
+        }
+      });
+      lettersDiv.appendChild(t);
+    });
+
+    resetBuildBtn.addEventListener("click", () => {
+      built = [];
+      used = used.map(()=>false);
+      fb.textContent = "";
+      [...lettersDiv.querySelectorAll(".tile")].forEach(x => {
+        x.classList.remove("selected");
+        x.style.pointerEvents="";
+      });
+      refreshAnswer();
+    });
+
+    skipBtn.addEventListener("click", () => {
+      fb.innerHTML = `<b>Skipped.</b> Correct spelling: <b>${word}</b>`;
+      setAnswered(item.id, false);
+      setProgress();
+      setTimeout(next, 250);
+    });
+
+    taskTxt.textContent = "Spelling";
+  }
+
+  // ---------- RENDER: TILE UNSCRAMBLE ----------
+  function renderTileUnscramble(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    const tiles = shuffle(item.tiles);
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">${item.prompt}</div>
+
+      <div class="answerBox" id="answerBox"><span class="ghost">Click words to build the sentence…</span></div>
+      <div class="tileRow" id="tiles"></div>
+
+      <div class="feedback" id="fb"></div>
+      <div class="controls">
+        <button class="smallbtn secondary" id="resetBtn">Reset</button>
+        <button class="smallbtn secondary" id="skipBtn">Skip</button>
+      </div>
+    `;
+
+    const tilesDiv = document.getElementById("tiles");
+    const answerBox = document.getElementById("answerBox");
+    const fb = document.getElementById("fb");
+    const resetBtn = document.getElementById("resetBtn");
+    const skipBtn = document.getElementById("skipBtn");
+
+    let built = [];
+    let chosen = [];
+
+    function refresh(){
+      answerBox.innerHTML = "";
+      if (built.length === 0){
+        const sp = document.createElement("span");
+        sp.className = "ghost";
+        sp.textContent = "Click words to build the sentence…";
+        answerBox.appendChild(sp);
+      } else {
+        built.forEach(w => {
+          const t = document.createElement("span");
+          t.className = "tile selected";
+          t.textContent = w;
+          answerBox.appendChild(t);
+        });
+      }
+    }
+
+    tiles.forEach((w, i) => {
+      const t = document.createElement("div");
+      t.className = "tile";
+      t.textContent = w;
+      t.addEventListener("click", () => {
+        if (chosen[i]) return;
+        chosen[i] = true;
+        built.push(w);
+        t.classList.add("selected");
+        refresh();
+
+        if (built.length === item.target.length){
+          [...tilesDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
+          const ok = built.join(" ") === item.target.join(" ");
+          if (ok){
+            fb.innerHTML = `<span class="good"><b>Correct.</b></span> Nice sentence.`;
+            score += 1; correct += 1; setAnswered(item.id, true);
+          } else {
+            fb.innerHTML = `<span class="bad"><b>Not quite.</b></span> Correct order: <b>${item.target.join(" ")}</b>`;
+            setAnswered(item.id, false);
+          }
+          setProgress();
+          setTimeout(next, 1100);
+        }
+      });
+      tilesDiv.appendChild(t);
+    });
+
+    resetBtn.addEventListener("click", () => {
+      built = [];
+      chosen = [];
+      fb.textContent = "";
+      [...tilesDiv.querySelectorAll(".tile")].forEach(x => {
+        x.classList.remove("selected");
+        x.style.pointerEvents="";
+      });
+      refresh();
+    });
+
+    skipBtn.addEventListener("click", () => {
+      fb.innerHTML = `<b>Skipped.</b> Correct order: <b>${item.target.join(" ")}</b>`;
+      setAnswered(item.id, false);
+      setProgress();
+      setTimeout(next, 250);
+    });
+
+    taskTxt.textContent = "Sentence build";
+  }
+
+  // ---------- RENDER: FIND MISTAKE ----------
+  function renderFindMistake(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">${item.prompt}</div>
+
+      <div class="tileRow" id="words"></div>
+
+      <div class="feedback" id="fb"></div>
+      <div class="controls">
+        <button class="smallbtn secondary" id="showBtn">Show Answer</button>
+        <button class="smallbtn secondary" id="skipBtn">Skip</button>
+      </div>
+    `;
+
+    const wordsDiv = document.getElementById("words");
+    const fb = document.getElementById("fb");
+    const showBtn = document.getElementById("showBtn");
+    const skipBtn = document.getElementById("skipBtn");
+
+    let locked = false;
+
+    item.sentenceWords.forEach((w, i) => {
+      const t = document.createElement("div");
+      t.className = "tile";
+      t.textContent = w;
+      t.addEventListener("click", () => {
+        if (locked) return;
+        locked = true;
+        [...wordsDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
+
+        if (i === item.wrongIndex){
+          t.classList.add("selected");
+          fb.innerHTML = `<span class="good"><b>Correct.</b></span> ${item.explain || ""}<br/>✅ Correct sentence: <b>${item.correctSentence}</b>`;
+          score += 1; correct += 1; setAnswered(item.id, true);
+        } else {
+          t.style.borderColor = "rgba(239,68,68,.7)";
+          t.style.background = "rgba(239,68,68,.18)";
+          const tiles = [...wordsDiv.querySelectorAll(".tile")];
+          tiles[item.wrongIndex].classList.add("selected");
+          fb.innerHTML = `<span class="bad"><b>Not quite.</b></span> ${item.explain || ""}<br/>✅ Correct sentence: <b>${item.correctSentence}</b>`;
+          setAnswered(item.id, false);
+        }
+        setProgress();
+        setTimeout(next, 1200);
+      });
+      wordsDiv.appendChild(t);
+    });
+
+    showBtn.addEventListener("click", () => {
+      if (locked) return;
+      locked = true;
+      [...wordsDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
+      const tiles = [...wordsDiv.querySelectorAll(".tile")];
+      tiles[item.wrongIndex].classList.add("selected");
+      fb.innerHTML = `✅ Correct sentence: <b>${item.correctSentence}</b><br/>${item.explain || ""}`;
+      setAnswered(item.id, false);
+      setProgress();
+      setTimeout(next, 900);
+    });
+
+    skipBtn.addEventListener("click", () => {
+      fb.innerHTML = `<b>Skipped.</b> Correct sentence: <b>${item.correctSentence}</b>`;
+      setAnswered(item.id, false);
+      setProgress();
+      setTimeout(next, 250);
+    });
+
+    taskTxt.textContent = "Find mistake";
+  }
+
+  function render(){
+    setProgress();
+    doneBox.style.display = "none";
+    cardArea.style.display = "block";
+
+    const item = sequence[idx];
+    if (!item){ showDone(false); return; }
+
+    if (item.type === "mcq") renderMCQ(item);
+    else if (item.type === "spell_click") renderSpell(item);
+    else if (item.type === "tile_unscramble") renderTileUnscramble(item);
+    else if (item.type === "find_mistake") renderFindMistake(item);
+    else renderMCQ(item);
+  }
+
+  // ---------- BUTTONS ----------
+  reviewWrongBtn.addEventListener("click", () => {
+    const wrongList = ALL.filter(it => wrongIds.has(it.id));
+    if (wrongList.length === 0){
+      alert("No wrong questions to review. Nice work!");
+      return;
+    }
+    sequence = wrongList;
+    idx = 0;
+    score = 0;
+    correct = 0;
+    answered = new Map();
+    stopTimer();
+    timeTxt.textContent = "Review";
+    doneBox.style.display = "none";
+    cardArea.style.display = "block";
+    render();
+  });
+
+  restartBtn.addEventListener("click", resetAll);
+
+  // ---------- INIT ----------
+  totalTxt.textContent = String(ALL.length);
+  render();
+  startTimer();
+})();
+</script>
+</body>
+</html>
