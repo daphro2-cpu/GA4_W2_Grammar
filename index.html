@@ -1,3 +1,8 @@
+<!--
+CHANGE ONLY: the Vocabulary list in the sidebar will be hidden (blocked) during Sentence Tasks
+(i.e., the unscramble + find-the-mistake screens). It will show again for Vocabulary/Grammar screens.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -223,6 +228,9 @@
       font-size:12.5px;
       color: var(--ink);
     }
+
+    /* NEW: block (hide) the vocab list box during unscramble/mistake */
+    #vocabBox.hidden { display: none; }
   </style>
 </head>
 <body>
@@ -284,7 +292,8 @@
           • Click <b>Next</b> only when you understand.
         </div>
 
-        <div>
+        <!-- NEW: wrap vocab list in a box we can hide -->
+        <div id="vocabBox">
           <div class="tag" style="display:inline-block;margin-bottom:6px;">Vocabulary list</div>
           <ul class="list">
             <li>magazine, reporter, twin</li>
@@ -311,153 +320,63 @@
   const TOTAL_TIME_SEC = 5 * 60;
 
   const vocabMCQ = [
-    {
-      id:"v_magazine",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"What does <b>magazine</b> mean here?",
+    { id:"v_magazine", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>magazine</b> mean here?",
       sentence:"“I bought a magazine to read on the bus.”",
-      choices:[
-        {t:"a book with many short articles and pictures", ok:true},
-        {t:"a large bag you carry on your back", ok:false},
-        {t:"a small card you send in the mail", ok:false},
-        {t:"a person who reports news", ok:false}
-      ],
+      choices:[ {t:"a book with many short articles and pictures", ok:true},{t:"a large bag you carry on your back", ok:false},{t:"a small card you send in the mail", ok:false},{t:"a person who reports news", ok:false} ],
       success:"Nice. The context word is <b>read</b> — you read a magazine.",
       clue:"Look at the verb <b>read</b>. What kind of thing do you <b>read</b> on the bus?"
     },
-    {
-      id:"v_reporter",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"What does <b>reporter</b> mean here?",
+    { id:"v_reporter", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>reporter</b> mean here?",
       sentence:"“The reporter asked questions and wrote a story for the newspaper.”",
-      choices:[
-        {t:"a person who writes news stories", ok:true},
-        {t:"one of two children born at the same time", ok:false},
-        {t:"neat and clean", ok:false},
-        {t:"not expensive", ok:false}
-      ],
+      choices:[ {t:"a person who writes news stories", ok:true},{t:"one of two children born at the same time", ok:false},{t:"neat and clean", ok:false},{t:"not expensive", ok:false} ],
       success:"Great. Notice: <b>asked questions</b> + <b>wrote a story</b>.",
       clue:"Find the actions: <b>asked questions</b>, <b>wrote a story</b>. Who does that job?"
     },
-    {
-      id:"v_twin",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"What does <b>twin</b> mean here?",
+    { id:"v_twin", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>twin</b> mean here?",
       sentence:"“Lily and Lucy are twins. They have the same birthday.”",
-      choices:[
-        {t:"one of two children born at the same time", ok:true},
-        {t:"a person who reports news", ok:false},
-        {t:"a sports shoe", ok:false},
-        {t:"a card you send in the mail", ok:false}
-      ],
+      choices:[ {t:"one of two children born at the same time", ok:true},{t:"a person who reports news", ok:false},{t:"a sports shoe", ok:false},{t:"a card you send in the mail", ok:false} ],
       success:"Correct. The key clue is <b>same birthday</b>.",
       clue:"Two people with the <b>same birthday</b> — what do we call them?"
     },
-    {
-      id:"v_awful",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"Choose the best meaning of <b>awful</b>.",
+    { id:"v_awful", section:"Vocabulary", qtype:"Meaning in context", prompt:"Choose the best meaning of <b>awful</b>.",
       sentence:"“The food tasted awful, so I stopped eating.”",
-      choices:[
-        {t:"very bad", ok:true},
-        {t:"not expensive", ok:false},
-        {t:"very neat and clean", ok:false},
-        {t:"orange-red (hair color)", ok:false}
-      ],
+      choices:[ {t:"very bad", ok:true},{t:"not expensive", ok:false},{t:"very neat and clean", ok:false},{t:"orange-red (hair color)", ok:false} ],
       success:"Yes. If you <b>stop eating</b>, the food is probably <b>bad</b>.",
       clue:"The speaker <b>stopped eating</b>. That usually happens when something tastes…?"
     },
-    {
-      id:"v_tidy",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"Choose the best meaning of <b>tidy</b>.",
+    { id:"v_tidy", section:"Vocabulary", qtype:"Meaning in context", prompt:"Choose the best meaning of <b>tidy</b>.",
       sentence:"“Her room is tidy. Everything is in the right place.”",
-      choices:[
-        {t:"neat and clean", ok:true},
-        {t:"very bad", ok:false},
-        {t:"a backpack", ok:false},
-        {t:"a sports shoe", ok:false}
-      ],
+      choices:[ {t:"neat and clean", ok:true},{t:"very bad", ok:false},{t:"a backpack", ok:false},{t:"a sports shoe", ok:false} ],
       success:"Correct. The clue is: <b>Everything is in the right place</b>.",
       clue:"“Everything is in the right place.” That means the room is…?"
     },
-    {
-      id:"v_ginger",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"What does <b>ginger</b> mean here?",
+    { id:"v_ginger", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>ginger</b> mean here?",
       sentence:"“She has ginger hair — it’s orange-red.”",
-      choices:[
-        {t:"orange-red (hair color)", ok:true},
-        {t:"not expensive", ok:false},
-        {t:"a person who writes news", ok:false},
-        {t:"a backpack", ok:false}
-      ],
+      choices:[ {t:"orange-red (hair color)", ok:true},{t:"not expensive", ok:false},{t:"a person who writes news", ok:false},{t:"a backpack", ok:false} ],
       success:"Yes. The sentence explains it: <b>orange-red</b>.",
       clue:"The sentence gives the definition after the dash: <b>orange-red</b>."
     },
-    {
-      id:"v_cheap",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"Choose the best replacement for <b>cheap</b>.",
+    { id:"v_cheap", section:"Vocabulary", qtype:"Meaning in context", prompt:"Choose the best replacement for <b>cheap</b>.",
       sentence:"“These trainers are cheap. They don’t cost much money.”",
-      choices:[
-        {t:"not expensive", ok:true},
-        {t:"very bad", ok:false},
-        {t:"very tidy", ok:false},
-        {t:"very old", ok:false}
-      ],
+      choices:[ {t:"not expensive", ok:true},{t:"very bad", ok:false},{t:"very tidy", ok:false},{t:"very old", ok:false} ],
       success:"Correct. The clue is: <b>don’t cost much money</b>.",
       clue:"“Don’t cost much money” means…?"
     },
-    {
-      id:"v_rucksack",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"What does <b>rucksack</b> mean here?",
+    { id:"v_rucksack", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>rucksack</b> mean here?",
       sentence:"“Put your books in your rucksack.”",
-      choices:[
-        {t:"a backpack", ok:true},
-        {t:"a magazine", ok:false},
-        {t:"a postcard", ok:false},
-        {t:"a reporter", ok:false}
-      ],
+      choices:[ {t:"a backpack", ok:true},{t:"a magazine", ok:false},{t:"a postcard", ok:false},{t:"a reporter", ok:false} ],
       success:"Yes. Books go in a <b>backpack</b>.",
       clue:"You put <b>books</b> in it and carry it. What is it?"
     },
-    {
-      id:"v_trainers",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"What are <b>trainers</b>?",
+    { id:"v_trainers", section:"Vocabulary", qtype:"Meaning in context", prompt:"What are <b>trainers</b>?",
       sentence:"“He wears trainers for running and PE.”",
-      choices:[
-        {t:"sports shoes", ok:true},
-        {t:"cards you send in the mail", ok:false},
-        {t:"a publication with articles", ok:false},
-        {t:"two children born at the same time", ok:false}
-      ],
+      choices:[ {t:"sports shoes", ok:true},{t:"cards you send in the mail", ok:false},{t:"a publication with articles", ok:false},{t:"two children born at the same time", ok:false} ],
       success:"Correct. The clue is: <b>running</b> and <b>PE</b>.",
       clue:"You wear them for <b>running</b> and <b>PE</b>. What do you wear?"
     },
-    {
-      id:"v_postcards",
-      section:"Vocabulary",
-      qtype:"Meaning in context",
-      prompt:"What are <b>postcards</b>?",
+    { id:"v_postcards", section:"Vocabulary", qtype:"Meaning in context", prompt:"What are <b>postcards</b>?",
       sentence:"“We sent postcards from the beach to our friends.”",
-      choices:[
-        {t:"cards you send in the mail with a picture", ok:true},
-        {t:"bags you carry on your back", ok:false},
-        {t:"sports shoes", ok:false},
-        {t:"people who write news", ok:false}
-      ],
+      choices:[ {t:"cards you send in the mail with a picture", ok:true},{t:"bags you carry on your back", ok:false},{t:"sports shoes", ok:false},{t:"people who write news", ok:false} ],
       success:"Yes. The clue is the verb <b>sent</b>.",
       clue:"You can <b>send</b> it to a friend. It’s a card with a picture."
     },
@@ -472,111 +391,53 @@
   ].map(s => ({...s, type:"spell", section:"Vocabulary", qtype:"Spelling (click letters)"}));
 
   const grammar = [
-    {
-      id:"g_be1",
-      type:"mcq",
-      section:"Grammar",
-      qtype:"Choose the correct BE verb",
-      prompt:"Choose the best sentence.",
-      sentence:"(Talking about one girl)",
-      choices:[
-        {t:"She are tidy.", ok:false},
-        {t:"She is tidy.", ok:true},
-        {t:"She am tidy.", ok:false},
-        {t:"She be tidy.", ok:false}
-      ],
+    { id:"g_be1", type:"mcq", section:"Grammar", qtype:"Choose the correct BE verb",
+      prompt:"Choose the best sentence.", sentence:"(Talking about one girl)",
+      choices:[ {t:"She are tidy.", ok:false},{t:"She is tidy.", ok:true},{t:"She am tidy.", ok:false},{t:"She be tidy.", ok:false} ],
       success:"Nice. With <b>she</b> we use <b>is</b>.",
       clue:"Which BE verb matches <b>she</b>? (am / is / are)"
     },
-    {
-      id:"g_be_q",
-      type:"mcq",
-      section:"Grammar",
-      qtype:"Question word order",
-      prompt:"Choose the correct question.",
-      sentence:"(You want to ask about a boy)",
-      choices:[
-        {t:"Is he a reporter?", ok:true},
-        {t:"He is a reporter?", ok:false},
-        {t:"Is a reporter he?", ok:false},
-        {t:"Are he a reporter?", ok:false}
-      ],
+    { id:"g_be_q", type:"mcq", section:"Grammar", qtype:"Question word order",
+      prompt:"Choose the correct question.", sentence:"(You want to ask about a boy)",
+      choices:[ {t:"Is he a reporter?", ok:true},{t:"He is a reporter?", ok:false},{t:"Is a reporter he?", ok:false},{t:"Are he a reporter?", ok:false} ],
       success:"Correct. In BE questions, <b>BE goes first</b>.",
       clue:"In a BE question, the first word is the BE verb: <b>Is/Are/Am</b>."
     },
-    {
-      id:"g_not",
-      type:"mcq",
-      section:"Grammar",
-      qtype:"Negative with BE",
-      prompt:"Choose the correct negative sentence.",
-      sentence:"(Meaning: He is not cheap.)",
-      choices:[
-        {t:"He not is cheap.", ok:false},
-        {t:"He isn’t cheap.", ok:true},
-        {t:"He don’t cheap.", ok:false},
-        {t:"He doesn’t cheap.", ok:false}
-      ],
+    { id:"g_not", type:"mcq", section:"Grammar", qtype:"Negative with BE",
+      prompt:"Choose the correct negative sentence.", sentence:"(Meaning: He is not cheap.)",
+      choices:[ {t:"He not is cheap.", ok:false},{t:"He isn’t cheap.", ok:true},{t:"He don’t cheap.", ok:false},{t:"He doesn’t cheap.", ok:false} ],
       success:"Yes. With BE, negative is <b>is not / isn’t</b>.",
       clue:"With BE, put <b>not</b> after the BE verb. (is not / are not)"
     },
-    {
-      id:"g_articles1",
-      type:"mcq",
-      section:"Grammar",
-      qtype:"Articles",
-      prompt:"Choose the best option.",
-      sentence:"“I bought ___ magazine.”",
-      choices:[
-        {t:"a", ok:true},
-        {t:"an", ok:false},
-        {t:"the", ok:false},
-        {t:"Ø (nothing)", ok:false}
-      ],
+    { id:"g_articles1", type:"mcq", section:"Grammar", qtype:"Articles",
+      prompt:"Choose the best option.", sentence:"“I bought ___ magazine.”",
+      choices:[ {t:"a", ok:true},{t:"an", ok:false},{t:"the", ok:false},{t:"Ø (nothing)", ok:false} ],
       success:"Correct. First time + one thing → <b>a</b>.",
       clue:"First time + one thing → <b>a</b>. (magazine starts with a consonant sound)"
     },
-    {
-      id:"g_articles_plural",
-      type:"mcq",
-      section:"Grammar",
-      qtype:"Plurals (no article)",
-      prompt:"Choose the best option.",
-      sentence:"“I like ___ trainers.” (in general)",
-      choices:[
-        {t:"Ø (nothing)", ok:true},
-        {t:"a", ok:false},
-        {t:"an", ok:false},
-        {t:"the", ok:false}
-      ],
+    { id:"g_articles_plural", type:"mcq", section:"Grammar", qtype:"Plurals (no article)",
+      prompt:"Choose the best option.", sentence:"“I like ___ trainers.” (in general)",
+      choices:[ {t:"Ø (nothing)", ok:true},{t:"a", ok:false},{t:"an", ok:false},{t:"the", ok:false} ],
       success:"Yes. Plural general → <b>no article</b>.",
       clue:"If you mean <b>all trainers in general</b>, use Ø (nothing)."
     }
   ];
 
   const sentenceTasks = [
-    {
-      id:"t_unscramble",
-      type:"tile",
-      section:"Sentence Tasks",
-      qtype:"Unscramble the sentence (click words)",
+    { id:"t_unscramble", type:"tile", section:"Sentence Tasks", qtype:"Unscramble the sentence (click words)",
       prompt:"Click the words in the correct order.",
       target:["The","twins","are","tidy","."],
       tiles:["tidy",".","The","are","twins"],
       success:"Nice. You built a correct sentence.",
       clue:"Start with the capital word. Then put BE after the subject."
     },
-    {
-      id:"t_find_mistake",
-      type:"mistake",
-      section:"Sentence Tasks",
-      qtype:"Find the mistake (click the wrong word)",
+    { id:"t_find_mistake", type:"mistake", section:"Sentence Tasks", qtype:"Find the mistake (click the wrong word)",
       prompt:"Click the one word that is wrong.",
       sentenceWords:["Where","are","you","live","?"],
       wrongIndex:3,
       correctSentence:"Where do you live?",
       success:"Correct. This question needs a helping verb.",
-      clue:"“Where ___ you live?” needs a helping verb: <b>do</b>.",
+      clue:"“Where ___ you live?” needs a helping verb: <b>do</b>."
     }
   ];
 
@@ -618,6 +479,9 @@
   const endMsg = document.getElementById("endMsg");
   const reviewBox = document.getElementById("reviewBox");
 
+  // NEW: vocab box (hide during sentence tasks)
+  const vocabBox = document.getElementById("vocabBox");
+
   // ---------- HELPERS ----------
   function shuffle(arr){
     const a = arr.slice();
@@ -655,7 +519,6 @@
     if (item.id.startsWith("g_")) wrongGrammar.add(item.qtype);
     if (item.id.startsWith("t_")) wrongGrammar.add(item.qtype);
   }
-  function markCorrect(item){}
 
   function stopTimer(){
     if (timerHandle){ clearInterval(timerHandle); timerHandle = null; }
@@ -707,6 +570,9 @@
     reviewBox.innerHTML = html;
 
     progBar.style.width = `100%`;
+
+    // show vocab box again on finish
+    vocabBox.classList.remove("hidden");
   }
 
   function next(){
@@ -728,6 +594,7 @@
     sequence = ALL.slice();
     doneBox.style.display = "none";
     cardArea.style.display = "block";
+    vocabBox.classList.remove("hidden");
     render();
     startTimer();
   }
@@ -814,8 +681,6 @@
 
           score += 1;
           correct += 1;
-          markCorrect(item);
-
           nextBtn.disabled = false;
         } else {
           btn.classList.add("wrong");
@@ -839,10 +704,7 @@
 
     nextBtn.addEventListener("click", () => next());
 
-    taskTxt.textContent =
-      item.section === "Vocabulary" ? "Vocabulary" :
-      item.section === "Grammar" ? "Grammar" :
-      "Practice";
+    taskTxt.textContent = item.section;
   }
 
   // ---------- RENDER: SPELL ----------
@@ -951,7 +813,7 @@
       [...lettersDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
 
       if (attempt === word){
-        score += 1; correct += 1; markCorrect(item);
+        score += 1; correct += 1;
         const a = attempts.get(id);
         setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
         fb.innerHTML = `<span class="good"><b>Correct!</b></span> Spelling: <b>${word}</b>`;
@@ -1050,10 +912,7 @@
       built = []; chosen = [];
       setSmileys(0);
       fb.innerHTML = `<span class="hint">Try again. Tip: start with the capital word.</span>`;
-      [...tilesDiv.querySelectorAll(".tile")].forEach(x => {
-        x.classList.remove("selected");
-        x.style.pointerEvents="";
-      });
+      [...tilesDiv.querySelectorAll(".tile")].forEach(x => x.classList.remove("selected"));
       refresh();
     });
 
@@ -1061,7 +920,7 @@
       attempts.set(id, (attempts.get(id) || 0) + 1);
       const ok = built.join(" ") === item.target.join(" ");
       if (ok){
-        score += 1; correct += 1; markCorrect(item);
+        score += 1; correct += 1;
         const a = attempts.get(id);
         setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
         fb.innerHTML = `<span class="good"><b>Correct!</b></span> ${item.success || ""}`;
@@ -1076,7 +935,7 @@
 
     nextBtn.addEventListener("click", () => next());
 
-    taskTxt.textContent = "Sentence";
+    taskTxt.textContent = "Sentence Tasks";
   }
 
   // ---------- RENDER: FIND MISTAKE ----------
@@ -1134,7 +993,7 @@
           t.classList.add("selected");
           [...wordsDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
 
-          score += 1; correct += 1; markCorrect(item);
+          score += 1; correct += 1;
           const a = attempts.get(id);
           setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
 
@@ -1165,7 +1024,13 @@
 
     nextBtn.addEventListener("click", () => next());
 
-    taskTxt.textContent = "Sentence";
+    taskTxt.textContent = "Sentence Tasks";
+  }
+
+  // NEW: hide vocab list during Sentence Tasks (unscramble/mistake)
+  function updateSidebarVisibility(item){
+    const isSentenceTask = (item.section === "Sentence Tasks") || (item.type === "tile") || (item.type === "mistake");
+    vocabBox.classList.toggle("hidden", isSentenceTask);
   }
 
   function render(){
@@ -1175,6 +1040,7 @@
     const item = sequence[idx];
     if (!item){ showDone(false); return; }
 
+    updateSidebarVisibility(item);
     setProgressUI();
 
     if (item.type === "mcq") renderMCQ(item);
@@ -1203,7 +1069,19 @@
   });
 
   // ---------- RESTART ----------
-  restartBtn.addEventListener("click", resetAll);
+  restartBtn.addEventListener("click", () => {
+    idx = 0; score = 0; correct = 0;
+    timer = TOTAL_TIME_SEC;
+    wrongIds.clear(); wrongWords.clear(); wrongGrammar.clear();
+    attempts.clear();
+    reviewMode = false;
+    sequence = ALL.slice();
+    doneBox.style.display = "none";
+    cardArea.style.display = "block";
+    vocabBox.classList.remove("hidden");
+    render();
+    startTimer();
+  });
 
   // ---------- INIT ----------
   totalTxt.textContent = String(ALL.length);
@@ -1213,4 +1091,3 @@
 </script>
 </body>
 </html>
-
