@@ -396,19 +396,23 @@ CHANGE ONLY: the Vocabulary list in the sidebar will be hidden (blocked) during 
       choices:[ {t:"She are tidy.", ok:false},{t:"She is tidy.", ok:true},{t:"She am tidy.", ok:false},{t:"She be tidy.", ok:false} ],
       success:"Nice. With <b>she</b> we use <b>is</b>.",
       clue:"Which BE verb matches <b>she</b>? (am / is / are)"
-    },
-    { id:"g_be_q", type:"mcq", section:"Grammar", qtype:"Question word order",
-      prompt:"Choose the correct question.", sentence:"(You want to ask about a boy)",
-      choices:[ {t:"Is he a reporter?", ok:true},{t:"He is a reporter?", ok:false},{t:"Is a reporter he?", ok:false},{t:"Are he a reporter?", ok:false} ],
-      success:"Correct. In BE questions, <b>BE goes first</b>.",
-      clue:"In a BE question, the first word is the BE verb: <b>Is/Are/Am</b>."
-    },
-    { id:"g_not", type:"mcq", section:"Grammar", qtype:"Negative with BE",
-      prompt:"Choose the correct negative sentence.", sentence:"(Meaning: He is not cheap.)",
-      choices:[ {t:"He not is cheap.", ok:false},{t:"He isn’t cheap.", ok:true},{t:"He don’t cheap.", ok:false},{t:"He doesn’t cheap.", ok:false} ],
-      success:"Yes. With BE, negative is <b>is not / isn’t</b>.",
-      clue:"With BE, put <b>not</b> after the BE verb. (is not / are not)"
-    },
+   {
+  id:"g_not",
+  type:"mcq",
+  section:"Grammar",
+  qtype:"Negative with BE",
+  prompt:"Choose the correct negative sentence.",
+  sentence:"(Meaning: These trainers are not cheap.)",
+  choices:[
+    {t:"These trainers not are cheap.", ok:false},
+    {t:"These trainers aren’t cheap.", ok:true},
+    {t:"These trainers don’t cheap.", ok:false},
+    {t:"These trainers doesn’t cheap.", ok:false}
+  ],
+  success:"Yes. With plural nouns, use <b>are not / aren’t</b>.",
+  clue:"With plural nouns, use <b>are</b>. Put <b>not</b> after it: <b>are not / aren’t</b>."
+},
+
     { id:"g_articles1", type:"mcq", section:"Grammar", qtype:"Articles",
       prompt:"Choose the best option.", sentence:"“I bought ___ magazine.”",
       choices:[ {t:"a", ok:true},{t:"an", ok:false},{t:"the", ok:false},{t:"Ø (nothing)", ok:false} ],
