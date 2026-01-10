@@ -1,7 +1,11 @@
 <!--
-CHANGE ONLY (already included):
-- Negative with BE question now uses "These trainers aren't cheap."
-- Vocabulary list box is hidden during Spelling (click letters) tasks.
+Full file: Grammar Practice • Unit 1 & Unit 2
+Includes: MCQ vocab, spelling click-letters, grammar MCQ, sentence unscramble, and
+UPDATED "Find the mistake" that:
+1) lets students click the wrong word
+2) then choose a replacement word
+3) then Check to confirm
+Also uses BUTTON tiles for reliable clicking.
 -->
 
 <!DOCTYPE html>
@@ -162,6 +166,8 @@ CHANGE ONLY (already included):
     .smallbtn[disabled]{opacity:.55;cursor:not-allowed}
 
     .tileRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+    /* Original tile (used for spelling + unscramble display chips) */
     .tile{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(31,42,68,.7);
@@ -174,6 +180,26 @@ CHANGE ONLY (already included):
     .tile.selected{
       border-color: rgba(34,197,94,.7);
       background: rgba(34,197,94,.18);
+    }
+
+    /* NEW: Button tiles (reliable clicks for Find-the-mistake + replacements) */
+    .tileBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(31,42,68,.7);
+      padding:8px 12px;border-radius:999px;
+      cursor:pointer;user-select:none;font-size:14px;
+      color: var(--ink);
+      transition: transform .05s ease, border-color .2s ease;
+    }
+    .tileBtn:hover{border-color: rgba(96,165,250,.55)}
+    .tileBtn:active{transform: translateY(1px)}
+    .tileBtn.selected{
+      border-color: rgba(34,197,94,.7);
+      background: rgba(34,197,94,.18);
+    }
+    .tileBtn.wrongPick{
+      border-color: rgba(239,68,68,.7);
+      background: rgba(239,68,68,.18);
     }
 
     .answerBox{
@@ -230,7 +256,7 @@ CHANGE ONLY (already included):
       color: var(--ink);
     }
 
-    /* hide vocab list box during spelling tasks */
+    /* Sidebar vocab list hide toggle (currently set to hide during spelling) */
     #vocabBox.hidden { display: none; }
   </style>
 </head>
@@ -403,20 +429,12 @@ CHANGE ONLY (already included):
       success:"Correct. In BE questions, <b>BE goes first</b>.",
       clue:"In a BE question, the first word is the BE verb: <b>Is/Are/Am</b>."
     },
-
-    /* ✅ UPDATED (kid-safe, keeps cheap) */
     { id:"g_not", type:"mcq", section:"Grammar", qtype:"Negative with BE",
-      prompt:"Choose the correct negative sentence.", sentence:"(Meaning: These trainers are not cheap.)",
-      choices:[
-        {t:"These trainers not are cheap.", ok:false},
-        {t:"These trainers aren't cheap.", ok:true},
-        {t:"These trainers don't cheap.", ok:false},
-        {t:"These trainers doesn't cheap.", ok:false}
-      ],
-      success:"Yes. With plural nouns, use <b>are not / aren't</b>.",
-      clue:"With plural nouns, use <b>are</b>. Put <b>not</b> after the BE verb."
+      prompt:"Choose the correct negative sentence.", sentence:"(Meaning: The shoes are not cheap.)",
+      choices:[ {t:"The shoes not are cheap.", ok:false},{t:"The shoes aren’t cheap.", ok:true},{t:"The shoes don’t cheap.", ok:false},{t:"The shoes doesn’t cheap.", ok:false} ],
+      success:"Yes. With BE, negative is <b>are not / aren’t</b>.",
+      clue:"With BE, put <b>not</b> after the BE verb. (is not / are not)"
     },
-
     { id:"g_articles1", type:"mcq", section:"Grammar", qtype:"Articles",
       prompt:"Choose the best option.", sentence:"“I bought ___ magazine.”",
       choices:[ {t:"a", ok:true},{t:"an", ok:false},{t:"the", ok:false},{t:"Ø (nothing)", ok:false} ],
@@ -439,13 +457,21 @@ CHANGE ONLY (already included):
       success:"Nice. You built a correct sentence.",
       clue:"Start with the capital word. Then put BE after the subject."
     },
-    { id:"t_find_mistake", type:"mistake", section:"Sentence Tasks", qtype:"Find the mistake (click the wrong word)",
-      prompt:"Click the one word that is wrong.",
+
+    /* UPDATED: Find mistake + replace */
+    {
+      id:"t_find_mistake",
+      type:"mistake",
+      section:"Sentence Tasks",
+      qtype:"Find the mistake (replace the wrong word)",
+      prompt:"Click the one wrong word. Then choose the correct word to replace it.",
       sentenceWords:["Where","are","you","live","?"],
-      wrongIndex:3,
+      wrongIndex:1, // "are"
+      replacements:["do","does","did","is"],
       correctSentence:"Where do you live?",
-      success:"Correct. This question needs a helping verb.",
-      clue:"“Where ___ you live?” needs a helping verb: <b>do</b>."
+      correctWords:["Where","do","you","live","?"],
+      success:"Correct. This question needs the helping verb <b>do</b>.",
+      clue:"In present simple questions with <b>you</b>, we use <b>do</b>: “Where do you live?”"
     }
   ];
 
@@ -694,6 +720,7 @@ CHANGE ONLY (already included):
     });
 
     nextBtn.addEventListener("click", () => next());
+
     taskTxt.textContent = item.section;
   }
 
@@ -819,6 +846,7 @@ CHANGE ONLY (already included):
     });
 
     nextBtn.addEventListener("click", () => next());
+
     taskTxt.textContent = "Spelling";
   }
 
@@ -923,10 +951,11 @@ CHANGE ONLY (already included):
     });
 
     nextBtn.addEventListener("click", () => next());
+
     taskTxt.textContent = "Sentence Tasks";
   }
 
-  // ---------- RENDER: FIND MISTAKE ----------
+  // ---------- RENDER: FIND MISTAKE (UPDATED: replace) ----------
   function renderMistake(item){
     sectionTitle.textContent = item.section;
     sectionTag.textContent = item.qtype;
@@ -934,14 +963,27 @@ CHANGE ONLY (already included):
     const id = item.id;
     attempts.set(id, attempts.get(id) || 0);
 
+    let words = item.sentenceWords.slice();
+    let pickedWrong = false;
+    let chosenReplacement = null;
+    let lockedCorrect = false;
+
     cardArea.innerHTML = `
       <div class="qtype">${item.qtype}</div>
       <div class="prompt">${item.prompt}</div>
 
       <div class="tileRow" id="words"></div>
 
+      <div class="reviewBox" id="replaceBox" style="display:none;">
+        <b>Replace with:</b>
+        <div class="tileRow" id="replaceChoices" style="margin-top:8px;"></div>
+        <div class="controls" style="margin-top:10px;">
+          <button class="smallbtn secondary" id="checkBtn" disabled>Check</button>
+        </div>
+      </div>
+
       <div class="emojiRow" id="emojiRow"></div>
-      <div class="feedback" id="fb"><span class="hint">Click the wrong word. If you miss, you will get a clue.</span></div>
+      <div class="feedback" id="fb"><span class="hint">Click the wrong word first.</span></div>
 
       <div class="controls">
         <button class="smallbtn secondary" id="hintBtn">Hint</button>
@@ -950,12 +992,13 @@ CHANGE ONLY (already included):
     `;
 
     const wordsDiv = document.getElementById("words");
+    const replaceBox = document.getElementById("replaceBox");
+    const replaceChoices = document.getElementById("replaceChoices");
+    const checkBtn = document.getElementById("checkBtn");
     const fb = document.getElementById("fb");
     const emojiRow = document.getElementById("emojiRow");
     const hintBtn = document.getElementById("hintBtn");
     const nextBtn = document.getElementById("nextBtn");
-
-    let lockedCorrect = false;
 
     function setSmileys(level){
       if (level <= 0) emojiRow.textContent = "";
@@ -963,58 +1006,109 @@ CHANGE ONLY (already included):
       else if (level === 2) emojiRow.textContent = "🙂🙂";
       else emojiRow.textContent = "😄😄😄";
     }
-    function showClue(){
-      fb.innerHTML = `<span class="hint"><b>Clue:</b> ${item.clue || "Look for the helping verb in the question."}</span>`;
+
+    function renderWords(){
+      wordsDiv.innerHTML = "";
+      words.forEach((w, i) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tileBtn";
+        btn.textContent = w;
+
+        btn.addEventListener("click", () => {
+          if (lockedCorrect) return;
+
+          if (!pickedWrong){
+            attempts.set(id, (attempts.get(id) || 0) + 1);
+
+            if (i === item.wrongIndex){
+              pickedWrong = true;
+              btn.classList.add("selected");
+              fb.innerHTML = `<span class="good"><b>Good catch.</b></span> Now choose the correct word to replace it.`;
+              replaceBox.style.display = "block";
+              renderReplacementChoices();
+            } else {
+              markWrong(item);
+              btn.classList.add("wrongPick");
+              setSmileys(0);
+              fb.innerHTML = `<span class="hint"><b>Try again:</b> ${item.clue}</span>`;
+              setTimeout(() => btn.classList.remove("wrongPick"), 450);
+            }
+
+            setProgressUI();
+          }
+        });
+
+        wordsDiv.appendChild(btn);
+      });
     }
 
-    item.sentenceWords.forEach((w, i) => {
-      const t = document.createElement("div");
-      t.className = "tile";
-      t.textContent = w;
-      t.addEventListener("click", () => {
-        if (lockedCorrect) return;
+    function renderReplacementChoices(){
+      replaceChoices.innerHTML = "";
+      item.replacements.forEach(rep => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "tileBtn";
+        b.textContent = rep;
 
-        attempts.set(id, (attempts.get(id) || 0) + 1);
+        b.addEventListener("click", () => {
+          if (lockedCorrect) return;
+          chosenReplacement = rep;
 
-        if (i === item.wrongIndex){
-          lockedCorrect = true;
-          t.classList.add("selected");
-          [...wordsDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
+          [...replaceChoices.querySelectorAll(".tileBtn")].forEach(x => x.classList.remove("selected"));
+          b.classList.add("selected");
 
-          score += 1; correct += 1;
-          const a = attempts.get(id);
-          setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
+          words[item.wrongIndex] = rep;
+          renderWords();
 
-          fb.innerHTML = `<span class="good"><b>Correct!</b></span> ${item.success || ""}<br/>
-                          <span class="hint">Say the correct question out loud.</span><br/>
-                          ✅ <b>${item.correctSentence}</b>`;
-          nextBtn.disabled = false;
-        } else {
-          markWrong(item);
-          setSmileys(0);
-          showClue();
-          t.style.borderColor = "rgba(239,68,68,.7)";
-          t.style.background = "rgba(239,68,68,.18)";
-          setTimeout(() => { t.style.borderColor=""; t.style.background=""; }, 450);
-        }
+          checkBtn.disabled = false;
+          fb.innerHTML = `<span class="hint">Now click <b>Check</b>.</span>`;
+        });
 
-        setProgressUI();
+        replaceChoices.appendChild(b);
       });
-      wordsDiv.appendChild(t);
+    }
+
+    checkBtn.addEventListener("click", () => {
+      if (lockedCorrect) return;
+
+      attempts.set(id, (attempts.get(id) || 0) + 1);
+
+      const ok = Array.isArray(item.correctWords) && (words.join(" ") === item.correctWords.join(" "));
+      if (ok){
+        lockedCorrect = true;
+        score += 1; correct += 1;
+
+        const a = attempts.get(id);
+        setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
+
+        fb.innerHTML = `<span class="good"><b>Correct!</b></span> ${item.success || ""}<br/>
+                        ✅ <b>${item.correctSentence}</b>`;
+        nextBtn.disabled = false;
+      } else {
+        markWrong(item);
+        setSmileys(0);
+        fb.innerHTML = `<span class="bad"><b>Not yet.</b></span> <span class="hint">Read the clue and choose again.</span><br/>
+                        <span class="hint"><b>Clue:</b> ${item.clue}</span>`;
+      }
+
+      setProgressUI();
     });
 
     hintBtn.addEventListener("click", () => {
       attempts.set(id, (attempts.get(id) || 0) + 1);
       markWrong(item);
-      showClue();
+      fb.innerHTML = `<span class="hint"><b>Hint:</b> ${item.clue}</span>`;
       setProgressUI();
     });
 
     nextBtn.addEventListener("click", () => next());
+
     taskTxt.textContent = "Sentence Tasks";
+    renderWords();
   }
 
-  // Hide vocab list during spelling tasks (click letters)
+  // Sidebar toggle (your current choice: hide only during spelling)
   function updateSidebarVisibility(item){
     const hideDuringSpelling = (item.type === "spell");
     vocabBox.classList.toggle("hidden", hideDuringSpelling);
@@ -1037,7 +1131,7 @@ CHANGE ONLY (already included):
     else renderMCQ(item);
   }
 
-  // Review mode
+  // ---------- REVIEW MODE ----------
   reviewWrongBtn.addEventListener("click", () => {
     const wrongList = ALL.filter(it => wrongIds.has(it.id));
     if (wrongList.length === 0){
@@ -1055,7 +1149,7 @@ CHANGE ONLY (already included):
     render();
   });
 
-  // Restart
+  // ---------- RESTART ----------
   restartBtn.addEventListener("click", () => {
     idx = 0; score = 0; correct = 0;
     timer = TOTAL_TIME_SEC;
@@ -1070,7 +1164,7 @@ CHANGE ONLY (already included):
     startTimer();
   });
 
-  // Init
+  // ---------- INIT ----------
   totalTxt.textContent = String(ALL.length);
   render();
   startTimer();
