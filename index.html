@@ -1,121 +1,1080 @@
+<!--
+CHANGE ONLY (already included):
+- Negative with BE question now uses "These trainers aren't cheap."
+- Vocabulary list box is hidden during Spelling (click letters) tasks.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Grammar Practice • Unit 1 & Unit 2</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grammar Practice • Unit 1 & Unit 2</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111c33;
+      --card:#0b1226;
+      --ink:#e5e7eb;
+      --muted:#9ca3af;
+      --line:#24324f;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+      --accent:#60a5fa;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Century Gothic", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 700px at 20% 10%, #1a2a55 0%, var(--bg) 60%);
+      color:var(--ink);
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 40px}
 
-<style>
-/* ---------- STYLES (UNCHANGED) ---------- */
-:root{
-  --bg:#0f172a;
-  --panel:#111c33;
-  --card:#0b1226;
-  --ink:#e5e7eb;
-  --muted:#9ca3af;
-  --line:#24324f;
-  --good:#22c55e;
-  --bad:#ef4444;
-  --warn:#f59e0b;
-  --accent:#60a5fa;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:"Century Gothic", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1200px 700px at 20% 10%, #1a2a55 0%, var(--bg) 60%);
-  color:var(--ink);
-}
-.wrap{max-width:980px;margin:0 auto;padding:18px 14px 40px}
-/* (CSS unchanged — omitted here for readability in explanation)
-   Your original CSS remains fully intact */
-</style>
+    header{
+      display:flex;gap:12px;align-items:flex-start;justify-content:space-between;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(96,165,250,.15), rgba(96,165,250,.04));
+      padding:14px;border-radius:14px;
+    }
+    .brand{display:flex;gap:12px;align-items:center;min-width:0}
+    .logo{
+      width:56px;height:56px;object-fit:contain;border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(11,18,38,.55);
+      padding:6px;flex:0 0 auto;
+    }
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35}
+
+    .meta{display:flex;flex-direction:column;gap:8px;align-items:flex-end;min-width:240px}
+    .pillrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
+      font-size:12px;border:1px solid var(--line);background: rgba(17,28,51,.7);
+      padding:6px 10px;border-radius:999px;user-select:none;
+    }
+    .pill b{color:#fff}
+    .bar{
+      width:240px;height:10px;background: rgba(255,255,255,.07);
+      border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.10);
+    }
+    .bar>div{
+      height:100%;width:0%;
+      background: linear-gradient(90deg, #60a5fa, #34d399);
+      transition: width .25s ease;
+    }
+
+    main{margin-top:14px;display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+    @media (max-width: 860px){
+      main{grid-template-columns:1fr}
+      .meta{align-items:flex-start;min-width:0}
+      .pillrow{justify-content:flex-start}
+      .bar{width:100%}
+    }
+    @media (max-width: 520px){ .logo{width:44px;height:44px} }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(17,28,51,.55);
+      border-radius:14px;
+      padding:12px;
+    }
+    .panel h2{
+      margin:0 0 10px;font-size:14px;color:#fff;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .tag{
+      font-size:12px;color:var(--muted);
+      border:1px solid var(--line);
+      background: rgba(11,18,38,.7);
+      padding:4px 8px;border-radius:999px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: rgba(11,18,38,.7);
+      border-radius:14px;
+      padding:14px;
+    }
+    .qtype{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .prompt{font-size:16px;line-height:1.35;margin:0 0 10px}
+    .sentence{
+      font-size:13px;color:var(--muted);
+      border-left:3px solid rgba(96,165,250,.5);
+      padding-left:10px;margin:8px 0 10px;line-height:1.4;
+    }
+
+    .choices{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:8px;
+    }
+    @media (max-width: 520px){ .choices{grid-template-columns:1fr} }
+
+    button.choice, button.smallbtn{
+      width:100%;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(31,42,68,.95), rgba(31,42,68,.65));
+      color:var(--ink);
+      border-radius:12px;
+      padding:10px;
+      font-size:14px;
+      text-align:left;
+      cursor:pointer;
+      transition: transform .05s ease, border-color .2s ease;
+      user-select:none;
+    }
+    button.choice:hover{border-color: rgba(96,165,250,.55)}
+    button.choice:active{transform: translateY(1px)}
+    button.choice[disabled]{opacity:.7;cursor:not-allowed}
+    button.choice.correct{
+      border-color: rgba(34,197,94,.7);
+      background: linear-gradient(180deg, rgba(34,197,94,.25), rgba(31,42,68,.65));
+    }
+    button.choice.wrong{
+      border-color: rgba(239,68,68,.7);
+      background: linear-gradient(180deg, rgba(239,68,68,.22), rgba(31,42,68,.65));
+    }
+
+    .feedback{
+      margin-top:10px;
+      font-size:13px;color:var(--muted);
+      line-height:1.4;
+      min-height: 22px;
+    }
+    .feedback b{color:#fff}
+    .feedback .good{color: var(--good)}
+    .feedback .bad{color: var(--bad)}
+    .feedback .hint{color: #cbd5e1}
+
+    .controls{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .smallbtn{
+      text-align:center;font-size:13px;padding:10px;
+      background: linear-gradient(180deg, rgba(34,211,238,.20), rgba(31,42,68,.65));
+      border-color: rgba(34,211,238,.25);
+    }
+    .smallbtn.secondary{
+      background: linear-gradient(180deg, rgba(96,165,250,.12), rgba(31,42,68,.65));
+      border-color: rgba(96,165,250,.25);
+    }
+    .smallbtn[disabled]{opacity:.55;cursor:not-allowed}
+
+    .tileRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .tile{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(31,42,68,.7);
+      padding:8px 10px;border-radius:999px;
+      cursor:pointer;user-select:none;font-size:14px;
+      transition: transform .05s ease, border-color .2s ease;
+    }
+    .tile:hover{border-color: rgba(96,165,250,.55)}
+    .tile:active{transform: translateY(1px)}
+    .tile.selected{
+      border-color: rgba(34,197,94,.7);
+      background: rgba(34,197,94,.18);
+    }
+
+    .answerBox{
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:12px;
+      padding:10px;
+      min-height:46px;
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+      background: rgba(11,18,38,.45);
+    }
+    .ghost{color: rgba(156,163,175,.85);font-size:13px}
+
+    .sideBox{display:flex;flex-direction:column;gap:10px}
+    .stat{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 12px;border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(11,18,38,.65);
+      font-size:13px;
+    }
+    .stat b{color:#fff}
+    .list{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-height:1.4}
+    .note{
+      font-size:12.5px;color:var(--muted);line-height:1.4;
+      border-left:3px solid rgba(245,158,11,.55);padding-left:10px;
+    }
+
+    .emojiRow{font-size: 20px; line-height: 1; margin-top: 8px; min-height: 24px}
+    .done{
+      display:none;margin-top:10px;padding:12px;border-radius:14px;
+      border:1px solid rgba(34,197,94,.35);
+      background: rgba(34,197,94,.10);
+    }
+    .done h3{margin:0 0 6px;font-size:15px}
+    .done p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+    .reviewBox{
+      margin-top:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(11,18,38,.55);
+      border-radius:12px;
+      padding:10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .reviewBox b{color:#fff}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .chip{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(31,42,68,.55);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12.5px;
+      color: var(--ink);
+    }
+
+    /* hide vocab list box during spelling tasks */
+    #vocabBox.hidden { display: none; }
+  </style>
 </head>
-
 <body>
-<div class="wrap">
-  <!-- HEADER / MAIN LAYOUT UNCHANGED -->
-</div>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img src="logo.png" alt="Logo" class="logo" />
+        <div>
+          <h1>Grammar Practice • Unit 1 & Unit 2</h1>
+          <div class="sub">
+            Read the clue. Then click <b>Next</b> when you are ready.<br/>
+            Vocabulary + spelling, then grammar + sentence tasks.
+          </div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="pillrow">
+          <div class="pill"><b>Progress</b> <span id="progTxt">0/0</span></div>
+          <div class="pill"><b>Score</b> <span id="scoreTxt">0</span></div>
+          <div class="pill"><b>Time</b> <span id="timeTxt">05:00</span></div>
+        </div>
+        <div class="bar"><div id="progBar"></div></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>
+          <span id="sectionTitle">Loading…</span>
+          <span class="tag" id="sectionTag">Practice</span>
+        </h2>
+
+        <div class="card" id="cardArea"></div>
+
+        <div class="done" id="doneBox">
+          <h3>Finished!</h3>
+          <p id="endMsg"></p>
+
+          <div class="reviewBox" id="reviewBox"></div>
+
+          <div class="controls">
+            <button class="smallbtn secondary" id="reviewWrongBtn">Practice Review (Only What I Missed)</button>
+            <button class="smallbtn" id="restartBtn">Restart</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel sideBox">
+        <h2>Quick Info <span class="tag">Unit 1–2</span></h2>
+
+        <div class="stat"><span>Current task</span> <b id="taskTxt">—</b></div>
+        <div class="stat"><span>Correct / Total</span> <b><span id="correctTxt">0</span>/<span id="totalTxt">0</span></b></div>
+
+        <div class="note">
+          <b>How to play:</b><br/>
+          • Click an answer.<br/>
+          • If wrong: read the clue and try again.<br/>
+          • Click <b>Next</b> only when you understand.
+        </div>
+
+        <div id="vocabBox">
+          <div class="tag" style="display:inline-block;margin-bottom:6px;">Vocabulary list</div>
+          <ul class="list">
+            <li>magazine, reporter, twin</li>
+            <li>awful, tidy, ginger, cheap</li>
+            <li>rucksack, trainers, postcards</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="tag" style="display:inline-block;margin-bottom:6px;">Grammar focus</div>
+          <ul class="list">
+            <li>BE: am / is / are</li>
+            <li>Questions: helping verb first</li>
+            <li>Negatives: add <b>not</b></li>
+            <li>Articles: a / an / the / Ø</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+  </div>
 
 <script>
-/* ---------- DATA ---------- */
+(() => {
+  const TOTAL_TIME_SEC = 5 * 60;
 
-const grammar = [
-  {
-    id:"g_be1",
-    type:"mcq",
-    section:"Grammar",
-    qtype:"Choose the correct BE verb",
-    prompt:"Choose the best sentence.",
-    sentence:"(Talking about one girl)",
-    choices:[
-      {t:"She are tidy.", ok:false},
-      {t:"She is tidy.", ok:true},
-      {t:"She am tidy.", ok:false},
-      {t:"She be tidy.", ok:false}
-    ],
-    success:"Nice. With <b>she</b> we use <b>is</b>.",
-    clue:"Which BE verb matches <b>she</b>? (am / is / are)"
-  },
+  const vocabMCQ = [
+    { id:"v_magazine", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>magazine</b> mean here?",
+      sentence:"“I bought a magazine to read on the bus.”",
+      choices:[ {t:"a book with many short articles and pictures", ok:true},{t:"a large bag you carry on your back", ok:false},{t:"a small card you send in the mail", ok:false},{t:"a person who reports news", ok:false} ],
+      success:"Nice. The context word is <b>read</b> — you read a magazine.",
+      clue:"Look at the verb <b>read</b>. What kind of thing do you <b>read</b> on the bus?"
+    },
+    { id:"v_reporter", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>reporter</b> mean here?",
+      sentence:"“The reporter asked questions and wrote a story for the newspaper.”",
+      choices:[ {t:"a person who writes news stories", ok:true},{t:"one of two children born at the same time", ok:false},{t:"neat and clean", ok:false},{t:"not expensive", ok:false} ],
+      success:"Great. Notice: <b>asked questions</b> + <b>wrote a story</b>.",
+      clue:"Find the actions: <b>asked questions</b>, <b>wrote a story</b>. Who does that job?"
+    },
+    { id:"v_twin", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>twin</b> mean here?",
+      sentence:"“Lily and Lucy are twins. They have the same birthday.”",
+      choices:[ {t:"one of two children born at the same time", ok:true},{t:"a person who reports news", ok:false},{t:"a sports shoe", ok:false},{t:"a card you send in the mail", ok:false} ],
+      success:"Correct. The key clue is <b>same birthday</b>.",
+      clue:"Two people with the <b>same birthday</b> — what do we call them?"
+    },
+    { id:"v_awful", section:"Vocabulary", qtype:"Meaning in context", prompt:"Choose the best meaning of <b>awful</b>.",
+      sentence:"“The food tasted awful, so I stopped eating.”",
+      choices:[ {t:"very bad", ok:true},{t:"not expensive", ok:false},{t:"very neat and clean", ok:false},{t:"orange-red (hair color)", ok:false} ],
+      success:"Yes. If you <b>stop eating</b>, the food is probably <b>bad</b>.",
+      clue:"The speaker <b>stopped eating</b>. That usually happens when something tastes…?"
+    },
+    { id:"v_tidy", section:"Vocabulary", qtype:"Meaning in context", prompt:"Choose the best meaning of <b>tidy</b>.",
+      sentence:"“Her room is tidy. Everything is in the right place.”",
+      choices:[ {t:"neat and clean", ok:true},{t:"very bad", ok:false},{t:"a backpack", ok:false},{t:"a sports shoe", ok:false} ],
+      success:"Correct. The clue is: <b>Everything is in the right place</b>.",
+      clue:"“Everything is in the right place.” That means the room is…?"
+    },
+    { id:"v_ginger", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>ginger</b> mean here?",
+      sentence:"“She has ginger hair — it’s orange-red.”",
+      choices:[ {t:"orange-red (hair color)", ok:true},{t:"not expensive", ok:false},{t:"a person who writes news", ok:false},{t:"a backpack", ok:false} ],
+      success:"Yes. The sentence explains it: <b>orange-red</b>.",
+      clue:"The sentence gives the definition after the dash: <b>orange-red</b>."
+    },
+    { id:"v_cheap", section:"Vocabulary", qtype:"Meaning in context", prompt:"Choose the best replacement for <b>cheap</b>.",
+      sentence:"“These trainers are cheap. They don’t cost much money.”",
+      choices:[ {t:"not expensive", ok:true},{t:"very bad", ok:false},{t:"very tidy", ok:false},{t:"very old", ok:false} ],
+      success:"Correct. The clue is: <b>don’t cost much money</b>.",
+      clue:"“Don’t cost much money” means…?"
+    },
+    { id:"v_rucksack", section:"Vocabulary", qtype:"Meaning in context", prompt:"What does <b>rucksack</b> mean here?",
+      sentence:"“Put your books in your rucksack.”",
+      choices:[ {t:"a backpack", ok:true},{t:"a magazine", ok:false},{t:"a postcard", ok:false},{t:"a reporter", ok:false} ],
+      success:"Yes. Books go in a <b>backpack</b>.",
+      clue:"You put <b>books</b> in it and carry it. What is it?"
+    },
+    { id:"v_trainers", section:"Vocabulary", qtype:"Meaning in context", prompt:"What are <b>trainers</b>?",
+      sentence:"“He wears trainers for running and PE.”",
+      choices:[ {t:"sports shoes", ok:true},{t:"cards you send in the mail", ok:false},{t:"a publication with articles", ok:false},{t:"two children born at the same time", ok:false} ],
+      success:"Correct. The clue is: <b>running</b> and <b>PE</b>.",
+      clue:"You wear them for <b>running</b> and <b>PE</b>. What do you wear?"
+    },
+    { id:"v_postcards", section:"Vocabulary", qtype:"Meaning in context", prompt:"What are <b>postcards</b>?",
+      sentence:"“We sent postcards from the beach to our friends.”",
+      choices:[ {t:"cards you send in the mail with a picture", ok:true},{t:"bags you carry on your back", ok:false},{t:"sports shoes", ok:false},{t:"people who write news", ok:false} ],
+      success:"Yes. The clue is the verb <b>sent</b>.",
+      clue:"You can <b>send</b> it to a friend. It’s a card with a picture."
+    },
+  ].map(x => ({...x, type:"mcq"}));
 
-  {
-    id:"g_be_q",
-    type:"mcq",
-    section:"Grammar",
-    qtype:"Question word order",
-    prompt:"Choose the correct question.",
-    sentence:"(You want to ask about a boy)",
-    choices:[
-      {t:"Is he a reporter?", ok:true},
-      {t:"He is a reporter?", ok:false},
-      {t:"Is a reporter he?", ok:false},
-      {t:"Are he a reporter?", ok:false}
-    ],
-    success:"Correct. In BE questions, <b>BE goes first</b>.",
-    clue:"In a BE question, the first word is the BE verb."
-  },
+  const spelling = [
+    { id:"s_magazine",  word:"MAGAZINE",  hint:"You read it. It has pictures and articles."},
+    { id:"s_reporter",  word:"REPORTER",  hint:"This person writes news."},
+    { id:"s_rucksack",  word:"RUCKSACK",  hint:"A backpack."},
+    { id:"s_ginger",    word:"GINGER",    hint:"Orange-red hair color."},
+    { id:"s_postcards", word:"POSTCARDS", hint:"Cards you send in the mail."},
+  ].map(s => ({...s, type:"spell", section:"Vocabulary", qtype:"Spelling (click letters)"}));
 
-  /* ✅ FIXED QUESTION — OPTION A */
-  {
-    id:"g_not",
-    type:"mcq",
-    section:"Grammar",
-    qtype:"Negative with BE",
-    prompt:"Choose the correct negative sentence.",
-    sentence:"(Meaning: These trainers are not cheap.)",
-    choices:[
-      {t:"These trainers not are cheap.", ok:false},
-      {t:"These trainers aren’t cheap.", ok:true},
-      {t:"These trainers don’t cheap.", ok:false},
-      {t:"These trainers doesn’t cheap.", ok:false}
-    ],
-    success:"Yes. With plural nouns, use <b>are not / aren’t</b>.",
-    clue:"With plural nouns, use <b>are</b>. Put <b>not</b> after it."
-  },
+  const grammar = [
+    { id:"g_be1", type:"mcq", section:"Grammar", qtype:"Choose the correct BE verb",
+      prompt:"Choose the best sentence.", sentence:"(Talking about one girl)",
+      choices:[ {t:"She are tidy.", ok:false},{t:"She is tidy.", ok:true},{t:"She am tidy.", ok:false},{t:"She be tidy.", ok:false} ],
+      success:"Nice. With <b>she</b> we use <b>is</b>.",
+      clue:"Which BE verb matches <b>she</b>? (am / is / are)"
+    },
+    { id:"g_be_q", type:"mcq", section:"Grammar", qtype:"Question word order",
+      prompt:"Choose the correct question.", sentence:"(You want to ask about a boy)",
+      choices:[ {t:"Is he a reporter?", ok:true},{t:"He is a reporter?", ok:false},{t:"Is a reporter he?", ok:false},{t:"Are he a reporter?", ok:false} ],
+      success:"Correct. In BE questions, <b>BE goes first</b>.",
+      clue:"In a BE question, the first word is the BE verb: <b>Is/Are/Am</b>."
+    },
 
-  {
-    id:"g_articles1",
-    type:"mcq",
-    section:"Grammar",
-    qtype:"Articles",
-    prompt:"Choose the best option.",
-    sentence:"“I bought ___ magazine.”",
-    choices:[
-      {t:"a", ok:true},
-      {t:"an", ok:false},
-      {t:"the", ok:false},
-      {t:"Ø (nothing)", ok:false}
-    ],
-    success:"Correct. First time + one thing → <b>a</b>.",
-    clue:"First time + one thing → <b>a</b>."
+    /* ✅ UPDATED (kid-safe, keeps cheap) */
+    { id:"g_not", type:"mcq", section:"Grammar", qtype:"Negative with BE",
+      prompt:"Choose the correct negative sentence.", sentence:"(Meaning: These trainers are not cheap.)",
+      choices:[
+        {t:"These trainers not are cheap.", ok:false},
+        {t:"These trainers aren't cheap.", ok:true},
+        {t:"These trainers don't cheap.", ok:false},
+        {t:"These trainers doesn't cheap.", ok:false}
+      ],
+      success:"Yes. With plural nouns, use <b>are not / aren't</b>.",
+      clue:"With plural nouns, use <b>are</b>. Put <b>not</b> after the BE verb."
+    },
+
+    { id:"g_articles1", type:"mcq", section:"Grammar", qtype:"Articles",
+      prompt:"Choose the best option.", sentence:"“I bought ___ magazine.”",
+      choices:[ {t:"a", ok:true},{t:"an", ok:false},{t:"the", ok:false},{t:"Ø (nothing)", ok:false} ],
+      success:"Correct. First time + one thing → <b>a</b>.",
+      clue:"First time + one thing → <b>a</b>. (magazine starts with a consonant sound)"
+    },
+    { id:"g_articles_plural", type:"mcq", section:"Grammar", qtype:"Plurals (no article)",
+      prompt:"Choose the best option.", sentence:"“I like ___ trainers.” (in general)",
+      choices:[ {t:"Ø (nothing)", ok:true},{t:"a", ok:false},{t:"an", ok:false},{t:"the", ok:false} ],
+      success:"Yes. Plural general → <b>no article</b>.",
+      clue:"If you mean <b>all trainers in general</b>, use Ø (nothing)."
+    }
+  ];
+
+  const sentenceTasks = [
+    { id:"t_unscramble", type:"tile", section:"Sentence Tasks", qtype:"Unscramble the sentence (click words)",
+      prompt:"Click the words in the correct order.",
+      target:["The","twins","are","tidy","."],
+      tiles:["tidy",".","The","are","twins"],
+      success:"Nice. You built a correct sentence.",
+      clue:"Start with the capital word. Then put BE after the subject."
+    },
+    { id:"t_find_mistake", type:"mistake", section:"Sentence Tasks", qtype:"Find the mistake (click the wrong word)",
+      prompt:"Click the one word that is wrong.",
+      sentenceWords:["Where","are","you","live","?"],
+      wrongIndex:3,
+      correctSentence:"Where do you live?",
+      success:"Correct. This question needs a helping verb.",
+      clue:"“Where ___ you live?” needs a helping verb: <b>do</b>."
+    }
+  ];
+
+  const ALL = [...vocabMCQ, ...spelling, ...grammar, ...sentenceTasks];
+
+  // ---------- STATE ----------
+  let idx = 0;
+  let score = 0;
+  let correct = 0;
+  let timer = TOTAL_TIME_SEC;
+  let timerHandle = null;
+
+  const wrongIds = new Set();
+  const wrongWords = new Set();
+  const wrongGrammar = new Set();
+  const attempts = new Map();
+
+  let sequence = ALL.slice();
+  let reviewMode = false;
+
+  // ---------- DOM ----------
+  const sectionTitle = document.getElementById("sectionTitle");
+  const sectionTag = document.getElementById("sectionTag");
+  const cardArea = document.getElementById("cardArea");
+  const doneBox = document.getElementById("doneBox");
+
+  const progTxt = document.getElementById("progTxt");
+  const scoreTxt = document.getElementById("scoreTxt");
+  const timeTxt = document.getElementById("timeTxt");
+  const progBar = document.getElementById("progBar");
+
+  const taskTxt = document.getElementById("taskTxt");
+  const correctTxt = document.getElementById("correctTxt");
+  const totalTxt = document.getElementById("totalTxt");
+
+  const reviewWrongBtn = document.getElementById("reviewWrongBtn");
+  const restartBtn = document.getElementById("restartBtn");
+
+  const endMsg = document.getElementById("endMsg");
+  const reviewBox = document.getElementById("reviewBox");
+
+  const vocabBox = document.getElementById("vocabBox");
+
+  // ---------- HELPERS ----------
+  function shuffle(arr){
+    const a = arr.slice();
+    for (let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
   }
-];
+  function formatTime(sec){
+    const m = String(Math.floor(sec/60)).padStart(2,"0");
+    const s = String(sec%60).padStart(2,"0");
+    return `${m}:${s}`;
+  }
+  function escapeHtml(s){
+    return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  }
 
-/* ---------- REST OF SCRIPT ----------
-   (rendering logic, timer, sidebar hiding, etc.)
-   remains EXACTLY the same as your original file.
-*/
+  function setProgressUI(){
+    progTxt.textContent = `${idx+1}/${sequence.length}`;
+    scoreTxt.textContent = String(score);
+    correctTxt.textContent = String(correct);
+    totalTxt.textContent = String(sequence.length);
+    progBar.style.width = `${(idx/sequence.length)*100}%`;
+    timeTxt.textContent = reviewMode ? "Review" : formatTime(timer);
+  }
 
+  function extractWordFromId(id){
+    return id.replace("v_","").replaceAll("_"," ");
+  }
+  function markWrong(item){
+    wrongIds.add(item.id);
+    if (item.id.startsWith("v_")) wrongWords.add(extractWordFromId(item.id));
+    if (item.id.startsWith("s_")) wrongWords.add(item.word);
+    if (item.id.startsWith("g_")) wrongGrammar.add(item.qtype);
+    if (item.id.startsWith("t_")) wrongGrammar.add(item.qtype);
+  }
+
+  function stopTimer(){
+    if (timerHandle){ clearInterval(timerHandle); timerHandle = null; }
+  }
+  function startTimer(){
+    stopTimer();
+    timeTxt.textContent = formatTime(timer);
+    timerHandle = setInterval(() => {
+      timer--;
+      if (timer < 0) timer = 0;
+      if (!reviewMode) timeTxt.textContent = formatTime(timer);
+      if (timer === 0){
+        stopTimer();
+        showDone(true);
+      }
+    }, 1000);
+  }
+
+  function showDone(timeUp=false){
+    cardArea.style.display = "none";
+    doneBox.style.display = "block";
+    sectionTitle.textContent = timeUp ? "Time’s up!" : "Finished!";
+    sectionTag.textContent = timeUp ? "Stop here" : "Nice work";
+    taskTxt.textContent = timeUp ? "Time limit reached" : "Completed";
+
+    const total = sequence.length;
+    endMsg.innerHTML = `You got <b>${correct}</b> correct out of <b>${total}</b>.`;
+
+    const vocabToReview = Array.from(wrongWords);
+    const grammarToReview = Array.from(wrongGrammar);
+
+    let html = "";
+    if (vocabToReview.length === 0 && grammarToReview.length === 0){
+      html += `<b>Review:</b> Nothing to review today. Great job.`;
+    } else {
+      html += `<b>Review reminder:</b> Before written homework, review these:`;
+      if (vocabToReview.length){
+        html += `<div style="margin-top:8px;"><b>Vocabulary / Spelling</b></div><div class="chips">` +
+          vocabToReview.map(w => `<span class="chip">${escapeHtml(w)}</span>`).join("") +
+          `</div>`;
+      }
+      if (grammarToReview.length){
+        html += `<div style="margin-top:10px;"><b>Grammar / Sentences</b></div><div class="chips">` +
+          grammarToReview.map(w => `<span class="chip">${escapeHtml(w)}</span>`).join("") +
+          `</div>`;
+      }
+      html += `<div style="margin-top:10px;">Tip: Say 2 examples out loud before you write.</div>`;
+    }
+    reviewBox.innerHTML = html;
+
+    progBar.style.width = `100%`;
+    vocabBox.classList.remove("hidden");
+  }
+
+  function next(){
+    idx++;
+    if (idx >= sequence.length){
+      stopTimer();
+      showDone(false);
+      return;
+    }
+    render();
+  }
+
+  function buildExtraContextClue(item){
+    const s = (item.sentence || "").toLowerCase();
+    if (s.includes("read")) return "Extra clue: Look for <b>read</b>. Ask: “What do we read?”";
+    if (s.includes("sent")) return "Extra clue: Look for <b>sent</b>. Ask: “What can we send?”";
+    if (s.includes("wrote") || s.includes("newspaper")) return "Extra clue: Find <b>wrote</b>/<b>newspaper</b>. What job writes news?";
+    if (s.includes("cost") || s.includes("money")) return "Extra clue: Find <b>money</b>. Cheap is about <b>price</b>.";
+    if (s.includes("right place")) return "Extra clue: “right place” = <b>organized</b>.";
+    if (s.includes("orange") || s.includes("red")) return "Extra clue: This is describing a <b>color</b>.";
+    if (s.includes("running") || s.includes("pe")) return "Extra clue: PE = sports. Think: what you <b>wear</b>.";
+    return "Extra clue: Underline the most important word(s). What do they tell you?";
+  }
+
+  // ---------- RENDER: MCQ ----------
+  function renderMCQ(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    const id = item.id;
+    attempts.set(id, attempts.get(id) || 0);
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">${item.prompt}</div>
+      <div class="sentence">${item.sentence || ""}</div>
+
+      <div class="choices" id="choices"></div>
+
+      <div class="emojiRow" id="emojiRow"></div>
+      <div class="feedback" id="fb"><span class="hint">Click an answer. If wrong, you will get a clue.</span></div>
+
+      <div class="controls">
+        <button class="smallbtn secondary" id="hintBtn">Hint</button>
+        <button class="smallbtn" id="nextBtn" disabled>Next</button>
+      </div>
+    `;
+
+    const choicesDiv = document.getElementById("choices");
+    const fb = document.getElementById("fb");
+    const emojiRow = document.getElementById("emojiRow");
+    const hintBtn = document.getElementById("hintBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const shuffled = shuffle(item.choices);
+    let lockedCorrect = false;
+
+    function setSmileys(level){
+      if (level <= 0) emojiRow.textContent = "";
+      else if (level === 1) emojiRow.textContent = "🙂";
+      else if (level === 2) emojiRow.textContent = "🙂🙂";
+      else emojiRow.textContent = "😄😄😄";
+    }
+
+    function showClue(){
+      const a = attempts.get(id) || 0;
+      if (a <= 1){
+        fb.innerHTML = `<span class="hint"><b>Clue:</b> ${item.clue}</span>`;
+      } else {
+        fb.innerHTML = `<span class="hint"><b>Clue:</b> ${item.clue}<br/>${buildExtraContextClue(item)}</span>`;
+      }
+    }
+
+    shuffled.forEach(ch => {
+      const btn = document.createElement("button");
+      btn.className = "choice";
+      btn.innerHTML = ch.t;
+
+      btn.addEventListener("click", () => {
+        if (lockedCorrect) return;
+
+        attempts.set(id, (attempts.get(id) || 0) + 1);
+        const a = attempts.get(id);
+
+        if (ch.ok){
+          lockedCorrect = true;
+          btn.classList.add("correct");
+          [...choicesDiv.querySelectorAll("button")].forEach(b => b.disabled = true);
+
+          fb.innerHTML = `<span class="good"><b>Correct!</b></span> ${item.success || ""}`;
+          setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
+
+          score += 1;
+          correct += 1;
+          nextBtn.disabled = false;
+        } else {
+          btn.classList.add("wrong");
+          setSmileys(0);
+          markWrong(item);
+          showClue();
+        }
+
+        setProgressUI();
+      });
+
+      choicesDiv.appendChild(btn);
+    });
+
+    hintBtn.addEventListener("click", () => {
+      attempts.set(id, (attempts.get(id) || 0) + 1);
+      markWrong(item);
+      showClue();
+      setProgressUI();
+    });
+
+    nextBtn.addEventListener("click", () => next());
+    taskTxt.textContent = item.section;
+  }
+
+  // ---------- RENDER: SPELL ----------
+  function renderSpell(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    const id = item.id;
+    attempts.set(id, attempts.get(id) || 0);
+
+    const word = item.word.toUpperCase();
+    const letters = shuffle(word.split(""));
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">Build the word: <b>${"•".repeat(word.length)}</b></div>
+      <div class="sentence">Hint: ${item.hint || ""}</div>
+
+      <div class="answerBox" id="answerBox"><span class="ghost">Click letters to build the word…</span></div>
+      <div class="tileRow" id="letters"></div>
+
+      <div class="emojiRow" id="emojiRow"></div>
+      <div class="feedback" id="fb"><span class="hint">When you finish, click <b>Check</b>.</span></div>
+
+      <div class="controls">
+        <button class="smallbtn secondary" id="resetBuildBtn">Reset</button>
+        <button class="smallbtn secondary" id="checkBtn">Check</button>
+        <button class="smallbtn" id="nextBtn" disabled>Next</button>
+      </div>
+    `;
+
+    const lettersDiv = document.getElementById("letters");
+    const answerBox = document.getElementById("answerBox");
+    const fb = document.getElementById("fb");
+    const emojiRow = document.getElementById("emojiRow");
+    const resetBuildBtn = document.getElementById("resetBuildBtn");
+    const checkBtn = document.getElementById("checkBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let built = [];
+    let used = new Array(letters.length).fill(false);
+    let checked = false;
+
+    function setSmileys(level){
+      if (level <= 0) emojiRow.textContent = "";
+      else if (level === 1) emojiRow.textContent = "🙂";
+      else if (level === 2) emojiRow.textContent = "🙂🙂";
+      else emojiRow.textContent = "😄😄😄";
+    }
+
+    function refreshAnswer(){
+      answerBox.innerHTML = "";
+      if (built.length === 0){
+        const sp = document.createElement("span");
+        sp.className = "ghost";
+        sp.textContent = "Click letters to build the word…";
+        answerBox.appendChild(sp);
+      } else {
+        built.forEach(ch => {
+          const t = document.createElement("span");
+          t.className = "tile selected";
+          t.textContent = ch;
+          answerBox.appendChild(t);
+        });
+      }
+    }
+
+    letters.forEach((ch, i) => {
+      const t = document.createElement("div");
+      t.className = "tile";
+      t.textContent = ch;
+      t.addEventListener("click", () => {
+        if (checked) return;
+        if (used[i]) return;
+        used[i] = true;
+        built.push(ch);
+        t.classList.add("selected");
+        refreshAnswer();
+      });
+      lettersDiv.appendChild(t);
+    });
+
+    resetBuildBtn.addEventListener("click", () => {
+      if (checked) return;
+      built = [];
+      used = used.map(()=>false);
+      setSmileys(0);
+      fb.innerHTML = `<span class="hint">Click letters to build the word, then press <b>Check</b>.</span>`;
+      [...lettersDiv.querySelectorAll(".tile")].forEach(x => x.classList.remove("selected"));
+      refreshAnswer();
+    });
+
+    checkBtn.addEventListener("click", () => {
+      if (checked) return;
+      attempts.set(id, (attempts.get(id) || 0) + 1);
+
+      const attempt = built.join("");
+      if (attempt.length !== word.length){
+        markWrong(item);
+        fb.innerHTML = `<span class="hint"><b>Clue:</b> You need <b>${word.length}</b> letters. You have <b>${attempt.length}</b>.</span>`;
+        setProgressUI();
+        return;
+      }
+
+      checked = true;
+      [...lettersDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
+
+      if (attempt === word){
+        score += 1; correct += 1;
+        const a = attempts.get(id);
+        setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
+        fb.innerHTML = `<span class="good"><b>Correct!</b></span> Spelling: <b>${word}</b>`;
+        nextBtn.disabled = false;
+      } else {
+        markWrong(item);
+        setSmileys(0);
+        fb.innerHTML = `<span class="bad"><b>Not yet.</b></span> <span class="hint">Clue: Check the order carefully. Try again.</span>`;
+        setTimeout(() => renderSpell(item), 900);
+      }
+
+      setProgressUI();
+    });
+
+    nextBtn.addEventListener("click", () => next());
+    taskTxt.textContent = "Spelling";
+  }
+
+  // ---------- RENDER: TILE UNSCRAMBLE ----------
+  function renderTile(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    const id = item.id;
+    attempts.set(id, attempts.get(id) || 0);
+
+    const tiles = shuffle(item.tiles);
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">${item.prompt}</div>
+
+      <div class="answerBox" id="answerBox"><span class="ghost">Click words to build the sentence…</span></div>
+      <div class="tileRow" id="tiles"></div>
+
+      <div class="emojiRow" id="emojiRow"></div>
+      <div class="feedback" id="fb"><span class="hint">When you finish, click <b>Check</b>.</span></div>
+
+      <div class="controls">
+        <button class="smallbtn secondary" id="resetBtn">Reset</button>
+        <button class="smallbtn secondary" id="checkBtn">Check</button>
+        <button class="smallbtn" id="nextBtn" disabled>Next</button>
+      </div>
+    `;
+
+    const tilesDiv = document.getElementById("tiles");
+    const answerBox = document.getElementById("answerBox");
+    const fb = document.getElementById("fb");
+    const emojiRow = document.getElementById("emojiRow");
+    const resetBtn = document.getElementById("resetBtn");
+    const checkBtn = document.getElementById("checkBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let built = [];
+    let chosen = [];
+
+    function setSmileys(level){
+      if (level <= 0) emojiRow.textContent = "";
+      else if (level === 1) emojiRow.textContent = "🙂";
+      else if (level === 2) emojiRow.textContent = "🙂🙂";
+      else emojiRow.textContent = "😄😄😄";
+    }
+    function refresh(){
+      answerBox.innerHTML = "";
+      if (built.length === 0){
+        const sp = document.createElement("span");
+        sp.className = "ghost";
+        sp.textContent = "Click words to build the sentence…";
+        answerBox.appendChild(sp);
+      } else {
+        built.forEach(w => {
+          const t = document.createElement("span");
+          t.className = "tile selected";
+          t.textContent = w;
+          answerBox.appendChild(t);
+        });
+      }
+    }
+
+    tiles.forEach((w, i) => {
+      const t = document.createElement("div");
+      t.className = "tile";
+      t.textContent = w;
+      t.addEventListener("click", () => {
+        if (chosen[i]) return;
+        chosen[i] = true;
+        built.push(w);
+        t.classList.add("selected");
+        refresh();
+      });
+      tilesDiv.appendChild(t);
+    });
+
+    resetBtn.addEventListener("click", () => {
+      built = []; chosen = [];
+      setSmileys(0);
+      fb.innerHTML = `<span class="hint">Try again. Tip: start with the capital word.</span>`;
+      [...tilesDiv.querySelectorAll(".tile")].forEach(x => x.classList.remove("selected"));
+      refresh();
+    });
+
+    checkBtn.addEventListener("click", () => {
+      attempts.set(id, (attempts.get(id) || 0) + 1);
+      const ok = built.join(" ") === item.target.join(" ");
+      if (ok){
+        score += 1; correct += 1;
+        const a = attempts.get(id);
+        setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
+        fb.innerHTML = `<span class="good"><b>Correct!</b></span> ${item.success || ""}`;
+        nextBtn.disabled = false;
+      } else {
+        markWrong(item);
+        setSmileys(0);
+        fb.innerHTML = `<span class="bad"><b>Not yet.</b></span> <span class="hint">${item.clue || "Check subject + BE order."}</span>`;
+      }
+      setProgressUI();
+    });
+
+    nextBtn.addEventListener("click", () => next());
+    taskTxt.textContent = "Sentence Tasks";
+  }
+
+  // ---------- RENDER: FIND MISTAKE ----------
+  function renderMistake(item){
+    sectionTitle.textContent = item.section;
+    sectionTag.textContent = item.qtype;
+
+    const id = item.id;
+    attempts.set(id, attempts.get(id) || 0);
+
+    cardArea.innerHTML = `
+      <div class="qtype">${item.qtype}</div>
+      <div class="prompt">${item.prompt}</div>
+
+      <div class="tileRow" id="words"></div>
+
+      <div class="emojiRow" id="emojiRow"></div>
+      <div class="feedback" id="fb"><span class="hint">Click the wrong word. If you miss, you will get a clue.</span></div>
+
+      <div class="controls">
+        <button class="smallbtn secondary" id="hintBtn">Hint</button>
+        <button class="smallbtn" id="nextBtn" disabled>Next</button>
+      </div>
+    `;
+
+    const wordsDiv = document.getElementById("words");
+    const fb = document.getElementById("fb");
+    const emojiRow = document.getElementById("emojiRow");
+    const hintBtn = document.getElementById("hintBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let lockedCorrect = false;
+
+    function setSmileys(level){
+      if (level <= 0) emojiRow.textContent = "";
+      else if (level === 1) emojiRow.textContent = "🙂";
+      else if (level === 2) emojiRow.textContent = "🙂🙂";
+      else emojiRow.textContent = "😄😄😄";
+    }
+    function showClue(){
+      fb.innerHTML = `<span class="hint"><b>Clue:</b> ${item.clue || "Look for the helping verb in the question."}</span>`;
+    }
+
+    item.sentenceWords.forEach((w, i) => {
+      const t = document.createElement("div");
+      t.className = "tile";
+      t.textContent = w;
+      t.addEventListener("click", () => {
+        if (lockedCorrect) return;
+
+        attempts.set(id, (attempts.get(id) || 0) + 1);
+
+        if (i === item.wrongIndex){
+          lockedCorrect = true;
+          t.classList.add("selected");
+          [...wordsDiv.querySelectorAll(".tile")].forEach(x => x.style.pointerEvents="none");
+
+          score += 1; correct += 1;
+          const a = attempts.get(id);
+          setSmileys(a === 1 ? 3 : a === 2 ? 2 : 1);
+
+          fb.innerHTML = `<span class="good"><b>Correct!</b></span> ${item.success || ""}<br/>
+                          <span class="hint">Say the correct question out loud.</span><br/>
+                          ✅ <b>${item.correctSentence}</b>`;
+          nextBtn.disabled = false;
+        } else {
+          markWrong(item);
+          setSmileys(0);
+          showClue();
+          t.style.borderColor = "rgba(239,68,68,.7)";
+          t.style.background = "rgba(239,68,68,.18)";
+          setTimeout(() => { t.style.borderColor=""; t.style.background=""; }, 450);
+        }
+
+        setProgressUI();
+      });
+      wordsDiv.appendChild(t);
+    });
+
+    hintBtn.addEventListener("click", () => {
+      attempts.set(id, (attempts.get(id) || 0) + 1);
+      markWrong(item);
+      showClue();
+      setProgressUI();
+    });
+
+    nextBtn.addEventListener("click", () => next());
+    taskTxt.textContent = "Sentence Tasks";
+  }
+
+  // Hide vocab list during spelling tasks (click letters)
+  function updateSidebarVisibility(item){
+    const hideDuringSpelling = (item.type === "spell");
+    vocabBox.classList.toggle("hidden", hideDuringSpelling);
+  }
+
+  function render(){
+    doneBox.style.display = "none";
+    cardArea.style.display = "block";
+
+    const item = sequence[idx];
+    if (!item){ showDone(false); return; }
+
+    updateSidebarVisibility(item);
+    setProgressUI();
+
+    if (item.type === "mcq") renderMCQ(item);
+    else if (item.type === "spell") renderSpell(item);
+    else if (item.type === "tile") renderTile(item);
+    else if (item.type === "mistake") renderMistake(item);
+    else renderMCQ(item);
+  }
+
+  // Review mode
+  reviewWrongBtn.addEventListener("click", () => {
+    const wrongList = ALL.filter(it => wrongIds.has(it.id));
+    if (wrongList.length === 0){
+      alert("Nothing to review. Great job!");
+      return;
+    }
+    reviewMode = true;
+    sequence = wrongList;
+    idx = 0;
+    score = 0; correct = 0;
+    stopTimer();
+    timeTxt.textContent = "Review";
+    doneBox.style.display = "none";
+    cardArea.style.display = "block";
+    render();
+  });
+
+  // Restart
+  restartBtn.addEventListener("click", () => {
+    idx = 0; score = 0; correct = 0;
+    timer = TOTAL_TIME_SEC;
+    wrongIds.clear(); wrongWords.clear(); wrongGrammar.clear();
+    attempts.clear();
+    reviewMode = false;
+    sequence = ALL.slice();
+    doneBox.style.display = "none";
+    cardArea.style.display = "block";
+    vocabBox.classList.remove("hidden");
+    render();
+    startTimer();
+  });
+
+  // Init
+  totalTxt.textContent = String(ALL.length);
+  render();
+  startTimer();
+})();
 </script>
 </body>
 </html>
